@@ -1,5 +1,5 @@
 /* Bal Defterim SW v2.1.6 — kabuğu önbellekler, Supabase istekleri her zaman ağdan gider */
-const CACHE = 'baldefterim-v2.1.6';
+const CACHE = 'baldefterim-v2.1.8';
 const KABUK = ['./', './index.html', './manifest.json', './ikon-192.png', './ikon-512.png'];
 
 self.addEventListener('install', e => {

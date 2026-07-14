@@ -47,6 +47,9 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 
 | Sürüm | Öne çıkanlar |
 |-------|--------------|
+| **2.1.8** | Teslim edildi / ödeme alındı işaretlerini geri alma butonları, iOS/Android tarayıcıdan açanlara ilk açılışta "ana ekrana ekle" uyarısı (APK ve yüklü PWA'da gösterilmez) |
+| **2.1.7** | Tarih kutuları diğer form alanlarıyla eşitlendi (taşma giderildi), özet ekranına ürün bazlı satış tutarları eklendi |
+| **2.1.6** | Ayarlar alt menüye taşındı, çift sezon oluşturma hatası düzeltildi, sezon düzenleme/silme eklendi |
 | **2.1.5** | Header'da iPhone çentik/güvenli alan düzeltmesi, sipariş modalında ürün seçimi butonlaştırıldı, tüm popuplar ekran ortasında açılıyor, teslim onayı popup'ı eklendi |
 | **2.1.1** | Temizlenmiş logo ve uygulama ikonları |
 | **2.0.0** | Supabase'e taşınan çok kullanıcılı sürüm (Google girişi, RLS) |
