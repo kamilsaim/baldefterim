@@ -96,6 +96,7 @@ main{max-width:720px;margin:0 auto;padding:14px 14px 20px}
 .mini-btn.yesil{background:var(--yesil);border-color:var(--yesil);color:#fff}
 .mini-btn.tehlike{color:var(--kirmizi);border-color:#EBC9C1}
 .mini-btn:disabled{opacity:.5}
+.mini-btn.kucuk{flex:0 0 auto;width:38px;padding:9px 0}
 
 .filtreler{display:flex;gap:7px;overflow-x:auto;padding:2px 0 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .filtreler::-webkit-scrollbar{display:none}
@@ -626,8 +627,8 @@ function cizSiparisler(){
         ${!o.teslim?`<button class="mini-btn birincil" ${cevrimdisi?'disabled':''} onclick="teslimEt('${o.id}')">✅ Teslim Edildi</button>`:`<button class="mini-btn" ${cevrimdisi?'disabled':''} onclick="teslimGeriAl('${o.id}')">↩️ Teslimi Geri Al</button>`}
         ${!o.hediye&&!o.odendi?`<button class="mini-btn yesil" ${cevrimdisi?'disabled':''} onclick="odemeAl('${o.id}')">💰 Ödeme Alındı</button>`:''}
         ${!o.hediye&&o.odendi?`<button class="mini-btn" ${cevrimdisi?'disabled':''} onclick="odemeGeriAl('${o.id}')">↩️ Ödemeyi Geri Al</button>`:''}
-        <button class="mini-btn" ${cevrimdisi?'disabled':''} onclick="duzenleSiparis('${o.id}')">✏️</button>
-        <button class="mini-btn tehlike" ${cevrimdisi?'disabled':''} onclick="silSiparis('${o.id}')">🗑️</button>
+        <button class="mini-btn kucuk" ${cevrimdisi?'disabled':''} onclick="duzenleSiparis('${o.id}')">✏️</button>
+        <button class="mini-btn kucuk tehlike" ${cevrimdisi?'disabled':''} onclick="silSiparis('${o.id}')">🗑️</button>
       </div>
     </div>`}).join(''):'<div class="bos"><div class="bos-ikon">📋</div><p>Bu filtreye uyan sipariş bulunamadı.</p></div>';
 }
