@@ -624,9 +624,9 @@ function cizSiparisler(){
         ${!o.hediye?`<span class="rozet ${o.odendi?'r-odendi':'r-odenmedi'}">${o.odendi?'💰 Ödendi: '+trhF(o.odeme_tarih):'⏳ Ödeme bekliyor'}</span>`:''}
       </div>
       <div class="sip-butonlar">
-        ${!o.teslim?`<button class="mini-btn birincil" ${cevrimdisi?'disabled':''} onclick="teslimEt('${o.id}')">✅ Teslim Edildi</button>`:`<button class="mini-btn" ${cevrimdisi?'disabled':''} onclick="teslimGeriAl('${o.id}')">↩️ Teslimi Geri Al</button>`}
-        ${!o.hediye&&!o.odendi?`<button class="mini-btn yesil" ${cevrimdisi?'disabled':''} onclick="odemeAl('${o.id}')">💰 Ödeme Alındı</button>`:''}
-        ${!o.hediye&&o.odendi?`<button class="mini-btn" ${cevrimdisi?'disabled':''} onclick="odemeGeriAl('${o.id}')">↩️ Ödemeyi Geri Al</button>`:''}
+        ${!o.teslim?`<button class="mini-btn kucuk birincil" title="Teslim Edildi" ${cevrimdisi?'disabled':''} onclick="teslimEt('${o.id}')">✅</button>`:`<button class="mini-btn kucuk" title="Teslimi Geri Al" ${cevrimdisi?'disabled':''} onclick="teslimGeriAl('${o.id}')">↩️</button>`}
+        ${!o.hediye&&!o.odendi?`<button class="mini-btn kucuk yesil" title="Ödeme Alındı" ${cevrimdisi?'disabled':''} onclick="odemeAl('${o.id}')">💰</button>`:''}
+        ${!o.hediye&&o.odendi?`<button class="mini-btn kucuk" title="Ödemeyi Geri Al" ${cevrimdisi?'disabled':''} onclick="odemeGeriAl('${o.id}')">↩️</button>`:''}
         <button class="mini-btn kucuk" ${cevrimdisi?'disabled':''} onclick="duzenleSiparis('${o.id}')">✏️</button>
         <button class="mini-btn kucuk tehlike" ${cevrimdisi?'disabled':''} onclick="silSiparis('${o.id}')">🗑️</button>
       </div>
