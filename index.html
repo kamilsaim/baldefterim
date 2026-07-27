@@ -90,7 +90,9 @@ main{max-width:720px;margin:0 auto;padding:14px 14px 20px}
 .r-odenmedi{background:var(--kirmizi-a);color:var(--kirmizi);border:1px solid #EBC9C1}
 .r-odendi{background:var(--yesil-a);color:var(--yesil);border:1px solid #C4DEC4}
 .r-hediye{background:var(--mavi-a);color:var(--mavi);border:1px solid #C3D7E8}
-.sip-butonlar{display:flex;flex-direction:column;gap:6px;justify-content:center;flex-shrink:0;border-left:1px solid var(--cizgi);padding-left:10px}
+.sip-butonlar{display:flex;gap:10px;align-items:center;flex-shrink:0}
+.sip-btn-grup{display:flex;flex-direction:column;gap:6px;justify-content:center}
+.sip-btn-grup.sag{border-left:1px solid var(--cizgi);padding-left:10px}
 .sip-butonlar .mini-btn{flex:none;width:42px;padding:9px 0}
 .mini-btn{flex:1;font-size:12.5px;font-weight:700;padding:9px 6px;border-radius:9px;border:1.5px solid var(--cizgi);background:#fff;color:var(--kavanoz-2);transition:.15s}
 .mini-btn:active{transform:scale(.97)}
@@ -265,10 +267,11 @@ nav button.aktif{color:var(--bal-koyu)}
     <label>Ürün *</label>
     <div class="urun-secim" id="sipUrunBtn"></div>
     <div class="satir-2">
-      <div><label>Miktar *</label><input id="sipMiktar" type="number" step="0.1" min="0" placeholder="0" oninput="tutarGuncelle()"></div>
-      <div><label>Birim Fiyat (₺)</label><input id="sipFiyat" type="number" step="1" min="0" oninput="tutarGuncelle()"></div>
+      <div><label>Miktar *</label><input id="sipMiktar" type="number" step="0.1" min="0" placeholder="0" oninput="fiyatDegisti()"></div>
+      <div><label>Birim Fiyat (₺)</label><input id="sipFiyat" type="number" step="1" min="0" oninput="fiyatDegisti()"></div>
     </div>
-    <label>Toplam</label><input id="sipToplam" disabled style="background:#F4EDDD;font-weight:800">
+    <label>Toplam (₺)</label><input id="sipToplam" type="number" step="1" min="0" oninput="toplamElle()" style="background:#FBF6EA;font-weight:800">
+    <div id="sipToplamOto" style="font-size:12px;color:var(--soluk);margin-top:3px"></div>
     <label>Not</label><textarea id="sipNot" rows="2" placeholder="İsteğe bağlı not..."></textarea>
     <div class="anahtar-satir">
       <b>🎁 Hediye olarak verilecek</b>
@@ -582,11 +585,11 @@ function ciz(){
 function cizOzet(){
   const {sip,st}=sezonVeri();
   const satisSip=sip.filter(o=>!o.hediye);
-  const toplamSatis=satisSip.filter(o=>o.teslim).reduce((a,o)=>a+o.miktar*o.fiyat,0);
-  const tahsil=satisSip.filter(o=>o.odendi).reduce((a,o)=>a+o.miktar*o.fiyat,0);
-  const alacak=satisSip.filter(o=>o.teslim&&!o.odendi).reduce((a,o)=>a+o.miktar*o.fiyat,0);
+  const toplamSatis=satisSip.filter(o=>o.teslim).reduce((a,o)=>a+efTutar(o),0);
+  const tahsil=satisSip.filter(o=>o.odendi).reduce((a,o)=>a+efTutar(o),0);
+  const alacak=satisSip.filter(o=>o.teslim&&!o.odendi).reduce((a,o)=>a+efTutar(o),0);
   const onSip=sip.filter(o=>!o.teslim);
-  const onTutar=onSip.filter(o=>!o.hediye).reduce((a,o)=>a+o.miktar*o.fiyat,0);
+  const onTutar=onSip.filter(o=>!o.hediye).reduce((a,o)=>a+efTutar(o),0);
   const hediyeler=sip.filter(o=>o.hediye);
   g('ozetStatlar').innerHTML=`
     <div class="stat" style="--vurgu:#4E8C50"><div class="st-etiket">Satış (Teslim)</div><div class="st-deger">${para(toplamSatis)}</div><div class="st-alt">${satisSip.filter(o=>o.teslim).length} sipariş</div></div>
@@ -596,7 +599,7 @@ function cizOzet(){
   g('ozetUrunSatis').innerHTML=URUNLER.map(u=>{
     const siparisleri=satisSip.filter(o=>o.teslim&&o.urun===u.id);
     const adet=siparisleri.reduce((a,o)=>a+o.miktar,0);
-    const tutar=siparisleri.reduce((a,o)=>a+o.miktar*o.fiyat,0);
+    const tutar=siparisleri.reduce((a,o)=>a+efTutar(o),0);
     if(!adet)return '';
     return `<div class="stok-satir">
       <div class="urun-hex" style="background:${u.renk}22;color:${u.renk}">${u.ikon}</div>
@@ -637,7 +640,7 @@ function cizSiparisler(){
   if(aktifUrunF!=='hepsi')liste=liste.filter(o=>o.urun===aktifUrunF);
   if(q)liste=liste.filter(o=>o.musteri.toLocaleLowerCase('tr').includes(q));
   g('siparisListe').innerHTML=liste.length?liste.map(o=>{
-    const u=urun(o.urun);const tutar=o.hediye?0:o.miktar*o.fiyat;
+    const u=urun(o.urun);const tutar=o.hediye?0:efTutar(o);
     const tel=telTemiz(o.tel);
     return `<div class="sip-kart ${o.teslim?'teslim':''} ${o.hediye?'hediye':''}">
       <div class="sip-icerik">
@@ -652,11 +655,15 @@ function cizSiparisler(){
         </div>
       </div>
       <div class="sip-butonlar">
-        ${!o.teslim?`<button class="mini-btn kucuk birincil" title="Teslim Edildi" ${cevrimdisi?'disabled':''} onclick="teslimEt('${o.id}')">✅</button>`:`<button class="mini-btn kucuk" title="Teslimi Geri Al" ${cevrimdisi?'disabled':''} onclick="teslimGeriAl('${o.id}')">↩️</button>`}
-        ${!o.hediye&&!o.odendi?`<button class="mini-btn kucuk yesil" title="Ödeme Alındı" ${cevrimdisi?'disabled':''} onclick="odemeAl('${o.id}')">💰</button>`:''}
-        ${!o.hediye&&o.odendi?`<button class="mini-btn kucuk" title="Ödemeyi Geri Al" ${cevrimdisi?'disabled':''} onclick="odemeGeriAl('${o.id}')">↩️</button>`:''}
-        <button class="mini-btn kucuk" title="Düzenle" ${cevrimdisi?'disabled':''} onclick="duzenleSiparis('${o.id}')">✏️</button>
-        <button class="mini-btn kucuk tehlike" title="Sil" ${cevrimdisi?'disabled':''} onclick="silSiparis('${o.id}')">🗑️</button>
+        <div class="sip-btn-grup">
+          ${!o.teslim?`<button class="mini-btn kucuk birincil" title="Teslim Edildi" ${cevrimdisi?'disabled':''} onclick="teslimEt('${o.id}')">✅</button>`:`<button class="mini-btn kucuk" title="Teslimi Geri Al" ${cevrimdisi?'disabled':''} onclick="teslimGeriAl('${o.id}')">↩️</button>`}
+          ${!o.hediye&&!o.odendi?`<button class="mini-btn kucuk yesil" title="Ödeme Alındı" ${cevrimdisi?'disabled':''} onclick="odemeAl('${o.id}')">💰</button>`:''}
+          ${!o.hediye&&o.odendi?`<button class="mini-btn kucuk" title="Ödemeyi Geri Al" ${cevrimdisi?'disabled':''} onclick="odemeGeriAl('${o.id}')">↩️</button>`:''}
+        </div>
+        <div class="sip-btn-grup sag">
+          <button class="mini-btn kucuk" title="Düzenle" ${cevrimdisi?'disabled':''} onclick="duzenleSiparis('${o.id}')">✏️</button>
+          <button class="mini-btn kucuk tehlike" title="Sil" ${cevrimdisi?'disabled':''} onclick="silSiparis('${o.id}')">🗑️</button>
+        </div>
       </div>
     </div>`}).join(''):'<div class="bos"><div class="bos-ikon">📋</div><p>Bu filtreye uyan sipariş bulunamadı.</p></div>';
 }
@@ -789,7 +796,7 @@ function acSiparisModal(){
   ['sipId','sipMusteri','sipTel','sipMiktar','sipNot'].forEach(i=>g(i).value='');
   g('sipHediye').checked=false;g('sipTarih').value=bugun();
   g('sipUrun').value=URUNLER[0].id;sipUrunButonlariCiz();
-  fiyatOner();ac('modalSiparis');
+  _toplamElle=false;fiyatOner();ac('modalSiparis');
 }
 function duzenleSiparis(id){
   const o=V.siparisler.find(x=>x.id===id);if(!o)return;
@@ -798,13 +805,27 @@ function duzenleSiparis(id){
   g('sipUrun').value=o.urun;sipUrunButonlariCiz();g('sipMiktar').value=o.miktar;g('sipFiyat').value=o.fiyat;
   g('sipTarih').value=o.tarih;g('sipNot').value=o.aciklama||'';
   g('sipHediye').checked=!!o.hediye;
-  tutarGuncelle();ac('modalSiparis');
+  _toplamElle=(!o.hediye&&o.tutar!=null);
+  tutarGuncelle();
+  if(_toplamElle)g('sipToplam').value=+o.tutar;
+  ac('modalSiparis');
 }
-function fiyatOner(){g('sipFiyat').value=V.fiyatlar[g('sipUrun').value]||0;tutarGuncelle()}
+function fiyatOner(){g('sipFiyat').value=V.fiyatlar[g('sipUrun').value]||0;_toplamElle=false;tutarGuncelle()}
+let _toplamElle=false;
+function fiyatDegisti(){_toplamElle=false;tutarGuncelle()}
+function toplamElle(){_toplamElle=true;tutarIpucu()}
+function efTutar(o){return o.hediye?0:(o.tutar!=null?+o.tutar:efTutar(o))}
+function tutarIpucu(){
+  const m=parseFloat(g('sipMiktar').value)||0,f=parseFloat(g('sipFiyat').value)||0;
+  g('sipToplamOto').textContent=g('sipHediye').checked?'':`Otomatik (miktar × fiyat): ${para(m*f)}`;
+}
 function tutarGuncelle(){
   const hediye=g('sipHediye').checked;
   const m=parseFloat(g('sipMiktar').value)||0,f=parseFloat(g('sipFiyat').value)||0;
-  g('sipToplam').value=hediye?'🎁 Hediye (0 ₺)':para(m*f);
+  const t=g('sipToplam');
+  if(hediye){t.value='';t.disabled=true;t.style.opacity='.5';}
+  else{t.disabled=false;t.style.opacity='1';if(!_toplamElle)t.value=Math.round(m*f*100)/100;}
+  tutarIpucu();
 }
 async function kaydetSiparis(){
   const musteri=g('sipMusteri').value.trim();
@@ -817,6 +838,7 @@ async function kaydetSiparis(){
     musteri, tel:g('sipTel').value.trim()||null,
     urun:g('sipUrun').value, miktar,
     fiyat:hediye?0:(parseFloat(g('sipFiyat').value)||0),
+    tutar:hediye?null:(isFinite(parseFloat(g('sipToplam').value))?parseFloat(g('sipToplam').value):null),
     tarih:g('sipTarih').value||bugun(),
     aciklama:g('sipNot').value.trim()||null, hediye
   };
@@ -978,8 +1000,8 @@ function musteriGecmis(ad){
   const anahtar=ad.toLocaleLowerCase('tr').trim();
   const liste=V.siparisler.filter(o=>o.musteri.toLocaleLowerCase('tr').trim()===anahtar);
   const satis=liste.filter(o=>!o.hediye);
-  const toplam=satis.filter(o=>o.teslim).reduce((a,o)=>a+o.miktar*o.fiyat,0);
-  const alacak=satis.filter(o=>o.teslim&&!o.odendi).reduce((a,o)=>a+o.miktar*o.fiyat,0);
+  const toplam=satis.filter(o=>o.teslim).reduce((a,o)=>a+efTutar(o),0);
+  const alacak=satis.filter(o=>o.teslim&&!o.odendi).reduce((a,o)=>a+efTutar(o),0);
   g('musteriBaslik').textContent='👤 '+ad;
   g('musteriOzet').innerHTML=`
     <div class="stat" style="--vurgu:#4E8C50"><div class="st-etiket">Toplam Alışveriş</div><div class="st-deger">${para(toplam)}</div><div class="st-alt">${liste.length} sipariş · 🎁 ${liste.filter(o=>o.hediye).length} hediye</div></div>
@@ -991,7 +1013,7 @@ function musteriGecmis(ad){
       <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">${u.ikon}</div>
       <div class="stok-bilgi"><b>${sayi(o.miktar)} ${u.birim} ${u.ad}${o.hediye?' · 🎁':''}</b>
         <small>${sezonAd} · ${trhF(o.tarih)} · ${o.teslim?'✅ Teslim':'📋 Bekliyor'}${!o.hediye?(o.odendi?' · 💰 Ödendi':' · ⏳ Ödeme bekliyor'):''}</small></div>
-      <div class="stok-adet"><b>${o.hediye?'Hediye':para(o.miktar*o.fiyat)}</b></div>
+      <div class="stok-adet"><b>${o.hediye?'Hediye':para(efTutar(o))}</b></div>
     </div>`}).join('');
   ac('modalMusteri');
 }
@@ -1015,7 +1037,7 @@ async function excelIndir(){
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(stokSayfa),'Stok Özeti');
   const sipSayfa=sip.map(o=>{const u=urun(o.urun);return{
     'Müşteri':o.musteri,'Telefon':o.tel||'','Ürün':u.ad,'Miktar':+o.miktar,'Birim':u.birim,
-    'Birim Fiyat':+o.fiyat,'Tutar':o.hediye?0:o.miktar*o.fiyat,'Hediye':o.hediye?'Evet':'',
+    'Birim Fiyat':+o.fiyat,'Tutar':o.hediye?0:efTutar(o),'Hediye':o.hediye?'Evet':'',
     'Sipariş Tarihi':o.tarih,'Durum':o.teslim?'Teslim edildi':'Ön sipariş','Teslim Tarihi':o.teslim_tarih||'',
     'Ödeme':o.hediye?'-':(o.odendi?'Alındı':'Bekliyor'),'Ödeme Tarihi':o.odeme_tarih||'','Not':o.aciklama||''}});
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(sipSayfa),'Siparişler');
