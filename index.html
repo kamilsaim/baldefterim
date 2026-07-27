@@ -336,6 +336,11 @@ nav button.aktif{color:var(--bal-koyu)}
       <div class="hk-satir"><b>Ad</b><span id="ayarAd">—</span></div>
       <div class="hk-satir"><b>E-posta</b><span id="ayarEposta">—</span></div>
       <button class="btn btn-cerceve" style="margin-top:10px" onclick="cikisYap()">🚪 Çıkış Yap</button>
+      <button class="btn btn-tehlike" style="margin-top:8px" onclick="hesabiSil()">🗑️ Hesabımı Sil</button>
+      <div style="font-size:12px;color:#8a7a5a;margin-top:8px;line-height:1.4">
+        Hesabını silersen Bal Defterim'deki tüm kayıtların (sezon, hasat, sipariş, zekat, ayarlar) kalıcı olarak silinir. Bu işlem geri alınamaz.
+        <a href="gizlilik-politikasi.html" target="_blank" style="color:#c9860a">Gizlilik Politikası</a>
+      </div>
     </div>
     <div class="kart"><h3>💵 Varsayılan Birim Fiyatlar</h3><div id="fiyatAyar"></div>
       <button class="btn btn-cerceve" style="margin-top:8px" onclick="kaydetFiyatlar()">Fiyatları Kaydet</button>
@@ -417,6 +422,25 @@ async function googleGiris(){
 async function cikisYap(){
   if(!confirm('Oturum kapatılsın mı?'))return;
   await sb.auth.signOut();location.reload();
+}
+async function hesabiSil(){
+  const o1=await onaySor('Hesabını ve TÜM Bal Defterim kayıtlarını silmek istediğine emin misin?','Devam Et');
+  if(!o1)return;
+  const o2=await onaySor('Bu işlem GERİ ALINAMAZ. Tüm sezon, hasat, sipariş ve zekat kayıtların kalıcı olarak silinecek. Onaylıyor musun?','Evet, Hesabımı Sil');
+  if(!o2)return;
+  try{
+    const {data,error}=await sb.functions.invoke('bd-delete-account');
+    if(error)throw error;
+    localStorage.removeItem('bd_cache');
+    localStorage.removeItem('bd_kur_gosterildi');
+    await sb.auth.signOut();
+    alert(data&&data.account_deleted===false
+      ? 'Bal Defterim verilerin silindi. Google hesabın başka uygulamalarda da kullanıldığı için hesabın tümüyle silinmedi.'
+      : 'Hesabın ve tüm kayıtların silindi. Hoşça kal! 🍯');
+    location.reload();
+  }catch(e){
+    alert('Hesap silinemedi: '+(e.message||e)+'\nLütfen tekrar dene veya saimkamil@gmail.com adresine yaz.');
+  }
 }
 sb.auth.onAuthStateChange((olay,oturum)=>{
   if(olay==='SIGNED_IN'&&oturum&&!KUL){KUL=oturum.user;baslat();}
