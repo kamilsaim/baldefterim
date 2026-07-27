@@ -72,7 +72,8 @@ main{max-width:720px;margin:0 auto;padding:14px 14px 20px}
 .stok-adet b{font-size:16px;color:var(--kavanoz)}
 .stok-adet small{display:block;font-size:11px;color:var(--soluk)}
 
-.sip-kart{background:var(--kart);border:1px solid var(--cizgi);border-left:4px solid var(--bal);border-radius:14px;padding:12px;box-shadow:var(--golge);margin-bottom:10px}
+.sip-kart{background:var(--kart);border:1px solid var(--cizgi);border-left:4px solid var(--bal);border-radius:14px;padding:12px;box-shadow:var(--golge);margin-bottom:10px;display:flex;gap:10px;align-items:stretch}
+.sip-icerik{flex:1;min-width:0}
 .sip-kart.teslim{border-left-color:var(--yesil)}
 .sip-kart.hediye{border-left-color:var(--mavi)}
 .sip-ust{display:flex;align-items:flex-start;gap:8px}
@@ -89,7 +90,8 @@ main{max-width:720px;margin:0 auto;padding:14px 14px 20px}
 .r-odenmedi{background:var(--kirmizi-a);color:var(--kirmizi);border:1px solid #EBC9C1}
 .r-odendi{background:var(--yesil-a);color:var(--yesil);border:1px solid #C4DEC4}
 .r-hediye{background:var(--mavi-a);color:var(--mavi);border:1px solid #C3D7E8}
-.sip-butonlar{display:flex;gap:8px;margin-top:10px}
+.sip-butonlar{display:flex;flex-direction:column;gap:6px;justify-content:center;flex-shrink:0;border-left:1px solid var(--cizgi);padding-left:10px}
+.sip-butonlar .mini-btn{flex:none;width:42px;padding:9px 0}
 .mini-btn{flex:1;font-size:12.5px;font-weight:700;padding:9px 6px;border-radius:9px;border:1.5px solid var(--cizgi);background:#fff;color:var(--kavanoz-2);transition:.15s}
 .mini-btn:active{transform:scale(.97)}
 .mini-btn.birincil{background:var(--bal);border-color:var(--bal);color:#fff}
@@ -638,21 +640,23 @@ function cizSiparisler(){
     const u=urun(o.urun);const tutar=o.hediye?0:o.miktar*o.fiyat;
     const tel=telTemiz(o.tel);
     return `<div class="sip-kart ${o.teslim?'teslim':''} ${o.hediye?'hediye':''}">
-      <div class="sip-ust"><b style="cursor:pointer;text-decoration:underline dotted var(--soluk)" onclick="musteriGecmis(decodeURIComponent('${encodeURIComponent(o.musteri)}'))">${o.musteri}</b><span class="sip-tarih">${trhF(o.tarih)}</span></div>
-      <div class="sip-detay">${u.ikon} ${sayi(o.miktar)} ${u.birim} ${u.ad} ${o.hediye?'· <b style="color:var(--mavi)">Hediye</b>':'· <b>'+para(tutar)+'</b> ('+para(o.fiyat)+'/'+u.birim+')'}</div>
-      ${o.tel?`<div class="sip-iletisim"><a href="tel:${o.tel}">📞 Ara</a><a href="https://wa.me/${tel}" target="_blank">💬 WhatsApp</a></div>`:''}
-      ${o.aciklama?`<div class="sip-not">📝 ${o.aciklama}</div>`:''}
-      <div class="rozetler">
-        ${o.hediye?'<span class="rozet r-hediye">🎁 Hediye</span>':''}
-        <span class="rozet ${o.teslim?'r-teslim':'r-bekliyor'}">${o.teslim?'✅ Teslim: '+trhF(o.teslim_tarih):'📋 Ön sipariş'}</span>
-        ${!o.hediye?`<span class="rozet ${o.odendi?'r-odendi':'r-odenmedi'}">${o.odendi?'💰 Ödendi: '+trhF(o.odeme_tarih):'⏳ Ödeme bekliyor'}</span>`:''}
+      <div class="sip-icerik">
+        <div class="sip-ust"><b style="cursor:pointer;text-decoration:underline dotted var(--soluk)" onclick="musteriGecmis(decodeURIComponent('${encodeURIComponent(o.musteri)}'))">${o.musteri}</b><span class="sip-tarih">${trhF(o.tarih)}</span></div>
+        <div class="sip-detay">${u.ikon} ${sayi(o.miktar)} ${u.birim} ${u.ad} ${o.hediye?'· <b style="color:var(--mavi)">Hediye</b>':'· <b>'+para(tutar)+'</b> ('+para(o.fiyat)+'/'+u.birim+')'}</div>
+        ${o.tel?`<div class="sip-iletisim"><a href="tel:${o.tel}">📞 Ara</a><a href="https://wa.me/${tel}" target="_blank">💬 WhatsApp</a></div>`:''}
+        ${o.aciklama?`<div class="sip-not">📝 ${o.aciklama}</div>`:''}
+        <div class="rozetler">
+          ${o.hediye?'<span class="rozet r-hediye">🎁 Hediye</span>':''}
+          <span class="rozet ${o.teslim?'r-teslim':'r-bekliyor'}">${o.teslim?'✅ Teslim: '+trhF(o.teslim_tarih):'📋 Ön sipariş'}</span>
+          ${!o.hediye?`<span class="rozet ${o.odendi?'r-odendi':'r-odenmedi'}">${o.odendi?'💰 Ödendi: '+trhF(o.odeme_tarih):'⏳ Ödeme bekliyor'}</span>`:''}
+        </div>
       </div>
       <div class="sip-butonlar">
         ${!o.teslim?`<button class="mini-btn kucuk birincil" title="Teslim Edildi" ${cevrimdisi?'disabled':''} onclick="teslimEt('${o.id}')">✅</button>`:`<button class="mini-btn kucuk" title="Teslimi Geri Al" ${cevrimdisi?'disabled':''} onclick="teslimGeriAl('${o.id}')">↩️</button>`}
         ${!o.hediye&&!o.odendi?`<button class="mini-btn kucuk yesil" title="Ödeme Alındı" ${cevrimdisi?'disabled':''} onclick="odemeAl('${o.id}')">💰</button>`:''}
         ${!o.hediye&&o.odendi?`<button class="mini-btn kucuk" title="Ödemeyi Geri Al" ${cevrimdisi?'disabled':''} onclick="odemeGeriAl('${o.id}')">↩️</button>`:''}
-        <button class="mini-btn kucuk" ${cevrimdisi?'disabled':''} onclick="duzenleSiparis('${o.id}')">✏️</button>
-        <button class="mini-btn kucuk tehlike" ${cevrimdisi?'disabled':''} onclick="silSiparis('${o.id}')">🗑️</button>
+        <button class="mini-btn kucuk" title="Düzenle" ${cevrimdisi?'disabled':''} onclick="duzenleSiparis('${o.id}')">✏️</button>
+        <button class="mini-btn kucuk tehlike" title="Sil" ${cevrimdisi?'disabled':''} onclick="silSiparis('${o.id}')">🗑️</button>
       </div>
     </div>`}).join(''):'<div class="bos"><div class="bos-ikon">📋</div><p>Bu filtreye uyan sipariş bulunamadı.</p></div>';
 }
