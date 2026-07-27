@@ -814,7 +814,7 @@ function fiyatOner(){g('sipFiyat').value=V.fiyatlar[g('sipUrun').value]||0;_topl
 let _toplamElle=false;
 function fiyatDegisti(){_toplamElle=false;tutarGuncelle()}
 function toplamElle(){_toplamElle=true;tutarIpucu()}
-function efTutar(o){return o.hediye?0:(o.tutar!=null?+o.tutar:efTutar(o))}
+function efTutar(o){return o.hediye?0:(o.tutar!=null?+o.tutar:o.miktar*o.fiyat)}
 function tutarIpucu(){
   const m=parseFloat(g('sipMiktar').value)||0,f=parseFloat(g('sipFiyat').value)||0;
   g('sipToplamOto').textContent=g('sipHediye').checked?'':`Otomatik (miktar × fiyat): ${para(m*f)}`;
