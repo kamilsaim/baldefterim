@@ -430,8 +430,32 @@ function telTemiz(t){return (t||'').replace(/\D/g,'').replace(/^0/,'90')}
 
 /* ═══════════════ OTURUM ═══════════════ */
 async function googleGiris(){
+  if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()){
+    const {data,error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:'com.kamilsaim.baldefterim://auth-callback',skipBrowserRedirect:true}});
+    if(error)return hata(error,'Giriş başarısız');
+    if(data?.url){const {Browser}=Capacitor.Plugins;await Browser.open({url:data.url,windowName:'_self'});}
+    return;
+  }
   const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});
   if(error)hata(error,'Giriş başarısız');
+}
+if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()){
+  const {App,Browser}=Capacitor.Plugins;
+  App.addListener('appUrlOpen',async ({url})=>{
+    if(url&&url.includes('auth-callback')){
+      try{await Browser.close();}catch(e){}
+      const hash=url.split('#')[1];
+      if(hash){
+        const params=new URLSearchParams(hash);
+        const access_token=params.get('access_token');
+        const refresh_token=params.get('refresh_token');
+        if(access_token&&refresh_token){
+          const {error}=await sb.auth.setSession({access_token,refresh_token});
+          if(error)hata(error,'Giriş tamamlanamadı');
+        }
+      }
+    }
+  });
 }
 async function cikisYap(){
   if(!confirm('Oturum kapatılsın mı?'))return;
