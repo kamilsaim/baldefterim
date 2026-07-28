@@ -64,4 +64,6 @@ Fikir ve hata bildirimleri için uygulamaya gir, kendi sezonunla dene ve gördü
 
 <div align="center">
 <sub>🍯 Kovandan kavanoza, hesabı Bal Defterim'de tutulur.</sub>
+
+<sub>Geliştirici: <a href="https://kamilsaim.web.app">kamilsaim.web.app</a></sub>
 </div>
