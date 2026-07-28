@@ -204,7 +204,7 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
     <div class="logo-hex" id="anaLogo">🍯</div>
     <div class="header-baslik">
       <h1>Bal Defterim</h1>
-      <small id="kullaniciAd">—</small>
+      <small id="kullaniciAd">Bereketli Olsun</small>
     </div>
     <span class="sezon-chip" id="sezonChip" onclick="acSezonModal()">—</span>
   </div>
@@ -515,7 +515,6 @@ async function baslat(){
     if(c){V=JSON.parse(c);cevrimdisi=true;g('cevrimdisiBand').style.display='block';}
     else{hata(e,'Veriler yüklenemedi');}
   }
-  g('kullaniciAd').textContent=KUL.user_metadata?.full_name||KUL.email;
   g('anaHeader').style.display='block';g('anaGovde').style.display='block';
   g('anaNav').style.display='flex';g('fabBtn').style.display='flex';
   g('yukleniyor').style.display='none';
