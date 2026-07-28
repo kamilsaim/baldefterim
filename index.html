@@ -590,7 +590,20 @@ function kaydirGec(yon){
 }
 (function(){
   let x0=null,y0=null;const gov=g('anaGovde');
-  gov.addEventListener('touchstart',e=>{const t=e.changedTouches[0];x0=t.clientX;y0=t.clientY;},{passive:true});
+  // Parmağın yatay kaydırılabilir bir şeridin (filtreler, geniş tablo vb.) içinde başlayıp
+  // başlamadığını bul — orada swipe yerine elemanın kendi kaydırması çalışmalı.
+  function yatayKaydirilabilirIcinde(el){
+    for(;el&&el!==gov;el=el.parentElement){
+      if(el.scrollWidth-el.clientWidth<5)continue;
+      const ox=getComputedStyle(el).overflowX;
+      if(ox==='auto'||ox==='scroll')return true;
+    }
+    return false;
+  }
+  gov.addEventListener('touchstart',e=>{
+    if(yatayKaydirilabilirIcinde(e.target)){x0=null;y0=null;return;}
+    const t=e.changedTouches[0];x0=t.clientX;y0=t.clientY;
+  },{passive:true});
   gov.addEventListener('touchend',e=>{
     if(x0===null)return;const t=e.changedTouches[0];
     if(document.querySelector('.modal-arka.acik')){x0=null;y0=null;return;} // modal açıkken swipe yok
