@@ -48,6 +48,7 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 
 | Sürüm | Öne çıkanlar |
 |-------|--------------|
+| **2.2.0** | Müşteri adı otomatik tamamlama (+telefon otomatik dolar), özet ekranında tahsil edilmemiş alacaklar (WhatsApp hatırlatma), önceki sezonla karşılaştırma kartı, 30 günü geçen yedekler için Ayarlar'da uyarı, yatay kaydırılabilir alanlarda sekme swipe'ı devre dışı |
 | **2.1.9** | Yedekten yükleme (JSON içe aktarma), sipariş toplamını elle düzeltme (indirim/yuvarlama), sipariş kartı buton düzeni yenilendi, uygulama içinden hesap silme + gizlilik politikası (Play Store hazırlığı) |
 | **2.1.8** | Teslim edildi / ödeme alındı işaretlerini geri alma butonları, iOS/Android tarayıcıdan açanlara ilk açılışta "ana ekrana ekle" uyarısı (APK ve yüklü PWA'da gösterilmez) |
 | **2.1.7** | Tarih kutuları diğer form alanlarıyla eşitlendi (taşma giderildi), özet ekranına ürün bazlı satış tutarları eklendi |
