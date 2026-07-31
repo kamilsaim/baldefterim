@@ -26,17 +26,19 @@ Her kullanıcı Google hesabıyla giriş yapar ve yalnızca kendi kayıtlarını
 2. **Hasat gir** — sezon boyunca aldığın balı ürün ürün kaydet.
 3. **Sipariş ekle** — müşteri, ürün, miktar ve fiyatı gir; hediye ise işaretle.
 4. **Teslim et** — sipariş teslim edildiğinde stoktan otomatik düşer.
-5. **Zekat ve raporları takip et** — hasadın öşürünü kaydet, sezon sonunda Excel raporu al.
+5. **Zekat ve raporları takip et** — hasadın öşürünü kaydet, sezonun durumunu rapor ekranından gör, dilersen Excel'e aktar.
 
 ## Öne çıkan özellikler
 
 - 📦 **Stok takibi** — hasat, devir, teslimat ve zekat düşümüyle güncel stok ve rezerve miktar
 - 🧾 **Sipariş yönetimi** — ön sipariş, teslimat ve ödeme durumu ayrı ayrı izlenir
 - 🎁 **Hediye desteği** — hediye siparişler satış ve alacak hesaplarına girmez, ama stoktan düşer
-- 🕌 **Zekat takibi** — hasadın %10'u otomatik hesaplanır, sezon devrindeki stok zekata dahil edilmez
+- 🐝 **Kendi ürünlerin** — sabit listeyle sınırlı değilsin; kendi stok türünü ekle, her ürün için zekata tabi olup olmadığını seç
+- 🕌 **Zekat takibi** — zekata tabi ürünlerde hasadın %10'u otomatik hesaplanır, sezon devrindeki stok zekata dahil edilmez
 - 🔄 **Sezon devri** — yeni sezon açılınca kalan stok otomatik olarak devredilir
 - 👥 **Müşteri geçmişi** — bir müşterinin tüm sezonlardaki siparişleri ve alacağı tek ekranda
-- 📊 **Excel raporu** — stok, sipariş, hasat ve zekat verileri dört sayfalık raporla dışa aktarılır
+- 📊 **Sipariş raporu** — satış, tahsilat, alacak, hediye ve zekat rakamları ürün bazında tek ekranda; tek dokunuşla metin olarak paylaş
+- 📥 **Excel raporu** — stok, sipariş, hasat ve zekat verileri dört sayfalık raporla dışa aktarılır
 - 💾 **Yedek al / yükle** — verilerini JSON olarak indir, gerektiğinde aynı dosyadan geri yükle
 - 📡 **Çevrimdışı görüntüleme** — bağlantı yokken son senkronize veriler salt okunur açılır
 
@@ -48,6 +50,8 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 
 | Sürüm | Öne çıkanlar |
 |-------|--------------|
+| **2.3.0** | Ayarlar'dan kendi ürünlerini ekleme/düzenleme ve ürün bazında zekata tabilik seçimi, stok ekranında hasat/devir/teslim/hediye/zekat kırılımı, siparişler ekranında ürün bazlı sipariş raporu (metin olarak paylaşılabilir) |
+| **2.2.1** | Google ile giriş yaparken oluşan hata giderildi (Android) |
 | **2.2.0** | Müşteri adı otomatik tamamlama (+telefon otomatik dolar), özet ekranında tahsil edilmemiş alacaklar (WhatsApp hatırlatma), önceki sezonla karşılaştırma kartı, 30 günü geçen yedekler için Ayarlar'da uyarı, yatay kaydırılabilir alanlarda sekme swipe'ı devre dışı |
 | **2.1.9** | Yedekten yükleme (JSON içe aktarma), sipariş toplamını elle düzeltme (indirim/yuvarlama), sipariş kartı buton düzeni yenilendi, uygulama içinden hesap silme + gizlilik politikası (Play Store hazırlığı) |
 | **2.1.8** | Teslim edildi / ödeme alındı işaretlerini geri alma butonları, iOS/Android tarayıcıdan açanlara ilk açılışta "ana ekrana ekle" uyarısı (APK ve yüklü PWA'da gösterilmez) |
