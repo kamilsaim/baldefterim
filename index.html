@@ -1641,12 +1641,29 @@ if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativ
     if(cikisaCiftBas())Capacitor.Plugins.App.exitApp();
   });
 }else{
-  /* Tarayıcı/PWA: aynı davranış, çıkış yerine gerçek geri */
+  /* Tarayıcı/PWA: aynı davranış, çıkış yerine gerçek geri.
+     Ana ekrana eklenmiş uygulamada (iOS/Android) dönülecek bir önceki site yok;
+     history.back() orada beyaz ekrana düşürdüğü için hiç çağrılmıyor. */
+  const ekranaEkli=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
   history.pushState({bd:1},'');
   window.addEventListener('popstate',()=>{
-    if(geriAdim()||!cikisaCiftBas()){history.pushState({bd:1},'');return;}
+    if(geriAdim()||ekranaEkli||!cikisaCiftBas()){history.pushState({bd:1},'');return;}
     history.back();
   });
+}
+
+/* iOS'ta kenardan başlayan yatay kaydırma WebKit'in geri/ileri jestini tetikler ve
+   CSS ile kapatılamaz; jesti iptal etmenin tek yolu kenar dokunuşunu preventDefault etmek.
+   Sadece 16px'lik kenar bandında ve tıklanabilir öğe dışında uygulanıyor. */
+if(/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){
+  const KENAR=16;
+  document.addEventListener('touchstart',e=>{
+    if(e.touches.length!==1)return;
+    const x=e.touches[0].clientX;
+    if(x>KENAR&&x<window.innerWidth-KENAR)return;
+    if(e.target.closest&&e.target.closest('input,select,textarea,button,a,label,[contenteditable]'))return;
+    e.preventDefault();
+  },{passive:false});
 }
 
 /* ═══════════════ BAŞLAT ═══════════════ */
