@@ -335,7 +335,8 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
 <!-- HASAT MODAL -->
 <div class="modal-arka" id="modalHasat">
   <div class="modal">
-    <div class="modal-baslik"><h2>Hasat / Stok Girişi</h2><button class="modal-kapat" onclick="kapat('modalHasat')">✕</button></div>
+    <div class="modal-baslik"><h2 id="hasatModalBaslik">Hasat / Stok Girişi</h2><button class="modal-kapat" onclick="kapat('modalHasat')">✕</button></div>
+    <input type="hidden" id="hasatId">
     <div class="satir-2">
       <div><label>Ürün *</label><select id="hasatUrun"></select></div>
       <div><label>Miktar *</label><input id="hasatMiktar" type="number" step="0.1" min="0" placeholder="0"></div>
@@ -349,7 +350,8 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
 <!-- ZEKAT MODAL -->
 <div class="modal-arka" id="modalZekat">
   <div class="modal">
-    <div class="modal-baslik"><h2>Zekat Verildi</h2><button class="modal-kapat" onclick="kapat('modalZekat')">✕</button></div>
+    <div class="modal-baslik"><h2 id="zekatModalBaslik">Zekat Verildi</h2><button class="modal-kapat" onclick="kapat('modalZekat')">✕</button></div>
+    <input type="hidden" id="zekatId">
     <div class="satir-2">
       <div><label>Ürün *</label><select id="zekatUrun"></select></div>
       <div><label>Miktar *</label><input id="zekatMiktar" type="number" step="0.1" min="0" placeholder="0"></div>
@@ -936,7 +938,7 @@ function cizStok(){
       <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">${h.tip==='devir'?'🔄':u.ikon}</div>
       <div class="stok-bilgi"><b>${u.ad} ${h.tip==='devir'?'(Devir)':''}</b><small>${trhF(h.tarih)}${h.aciklama?' · '+h.aciklama:''}</small></div>
       <div class="stok-adet"><b>+${sayi(h.miktar)} ${u.birim}</b>
-        <small><button style="color:var(--kirmizi);font-size:11px;font-weight:700" ${cevrimdisi?'disabled':''} onclick="silHasat('${h.id}')">Sil</button></small></div>
+        <small><button style="color:var(--bal-koyu);font-size:11px;font-weight:700;margin-right:8px" ${cevrimdisi?'disabled':''} onclick="duzenleHasat('${h.id}')">Düzenle</button><button style="color:var(--kirmizi);font-size:11px;font-weight:700" ${cevrimdisi?'disabled':''} onclick="silHasat('${h.id}')">Sil</button></small></div>
     </div>`}).join(''):'<div class="bos"><div class="bos-ikon">🚜</div><p>Henüz hasat girişi yok.<br>Ağustos hasadını buradan ekle!</p></div>';
 }
 function cizZekat(){
@@ -957,7 +959,7 @@ function cizZekat(){
     return `<div class="stok-satir">
       <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">🤲</div>
       <div class="stok-bilgi"><b>${sayi(z.miktar)} ${u.birim} ${u.ad}</b><small>${trhF(z.tarih)}${z.aciklama?' · '+z.aciklama:''}</small></div>
-      <div class="stok-adet"><small><button style="color:var(--kirmizi);font-size:11px;font-weight:700" ${cevrimdisi?'disabled':''} onclick="silZekat('${z.id}')">Sil</button></small></div>
+      <div class="stok-adet"><small><button style="color:var(--bal-koyu);font-size:11px;font-weight:700;margin-right:8px" ${cevrimdisi?'disabled':''} onclick="duzenleZekat('${z.id}')">Düzenle</button><button style="color:var(--kirmizi);font-size:11px;font-weight:700" ${cevrimdisi?'disabled':''} onclick="silZekat('${z.id}')">Sil</button></small></div>
     </div>`}).join(''):'<div class="bos" style="padding:20px"><p>Henüz zekat kaydı yok.</p></div>';
 }
 
@@ -1036,7 +1038,11 @@ function onayYanit(sonuc){
   if(_onayCozucu){_onayCozucu(sonuc);_onayCozucu=null}
 }
 document.querySelectorAll('.modal-arka').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('acik')}));
-function urunSecenek(sel){g(sel).innerHTML=aktifUrunler().map(u=>`<option value="${u.id}">${u.ikon} ${u.ad} (${u.birim})</option>`).join('')}
+/* zorunlu: düzenlenen eski kayıt pasif bir ürüne aitse o ürün de listede kalsın */
+function urunSecenek(sel,zorunlu){
+  const liste=(!zorunlu||aktifUrunler().some(u=>u.id===zorunlu))?aktifUrunler():[...aktifUrunler(),urun(zorunlu)];
+  g(sel).innerHTML=liste.map(u=>`<option value="${u.id}">${u.ikon} ${u.ad} (${u.birim})</option>`).join('');
+}
 function sipUrunButonlariCiz(){
   const secili=g('sipUrun').value;
   /* Düzenlenen eski sipariş pasif bir ürüne aitse o ürün de listeye girsin */
@@ -1147,36 +1153,71 @@ async function kaydetSiparis(){
 
 function acHasatModal(){
   if(cevrimdisi)return toast('📡 Çevrimdışı: kayıt eklenemez');
+  g('hasatModalBaslik').textContent='Hasat / Stok Girişi';g('hasatId').value='';
   urunSecenek('hasatUrun');g('hasatMiktar').value='';g('hasatNot').value='';g('hasatTarih').value=bugun();ac('modalHasat');
+}
+function duzenleHasat(id){
+  if(cevrimdisi)return toast('📡 Çevrimdışı: kayıt düzenlenemez');
+  const h=V.hasatlar.find(x=>x.id===id);if(!h)return;
+  g('hasatModalBaslik').textContent=h.tip==='devir'?'Devir Kaydını Düzenle':'Hasat Kaydını Düzenle';
+  g('hasatId').value=h.id;
+  urunSecenek('hasatUrun',h.urun);g('hasatUrun').value=h.urun;
+  g('hasatMiktar').value=h.miktar;g('hasatTarih').value=h.tarih;g('hasatNot').value=h.aciklama||'';
+  ac('modalHasat');
 }
 async function kaydetHasat(){
   const m=parseFloat(g('hasatMiktar').value);
   if(!m||m<=0)return toast('⚠️ Geçerli miktar girin');
+  const id=g('hasatId').value;
+  const veri={urun:g('hasatUrun').value,miktar:m,tarih:g('hasatTarih').value||bugun(),aciklama:g('hasatNot').value.trim()||null};
   g('hasatKaydetBtn').disabled=true;
   try{
-    const {data,error}=await sb.from('bd_hasatlar').insert({sezon_id:V.aktifSezon,urun:g('hasatUrun').value,miktar:m,tarih:g('hasatTarih').value||bugun(),aciklama:g('hasatNot').value.trim()||null,tip:'hasat'}).select().single();
-    if(error)throw error;
-    V.hasatlar.unshift(data);
+    if(id){
+      const {error}=await sb.from('bd_hasatlar').update(veri).eq('id',id);
+      if(error)throw error;
+      Object.assign(V.hasatlar.find(x=>x.id===id),veri);
+    }else{
+      const {data,error}=await sb.from('bd_hasatlar').insert({...veri,sezon_id:V.aktifSezon,tip:'hasat'}).select().single();
+      if(error)throw error;
+      V.hasatlar.unshift(data);
+    }
     localStorage.setItem('bd_cache',JSON.stringify(V));
-    kapat('modalHasat');ciz();toast('🚜 Hasat kaydedildi');
+    kapat('modalHasat');ciz();toast(id?'✏️ Hasat kaydı güncellendi':'🚜 Hasat kaydedildi');
   }catch(e){hata(e,'Kaydedilemedi')}
   g('hasatKaydetBtn').disabled=false;
 }
 
 function acZekatModal(){
   if(cevrimdisi)return toast('📡 Çevrimdışı: kayıt eklenemez');
+  g('zekatModalBaslik').textContent='Zekat Verildi';g('zekatId').value='';
   urunSecenek('zekatUrun');g('zekatMiktar').value='';g('zekatNot').value='';g('zekatTarih').value=bugun();ac('modalZekat');
+}
+function duzenleZekat(id){
+  if(cevrimdisi)return toast('📡 Çevrimdışı: kayıt düzenlenemez');
+  const z=V.zekatlar.find(x=>x.id===id);if(!z)return;
+  g('zekatModalBaslik').textContent='Zekat Kaydını Düzenle';g('zekatId').value=z.id;
+  urunSecenek('zekatUrun',z.urun);g('zekatUrun').value=z.urun;
+  g('zekatMiktar').value=z.miktar;g('zekatTarih').value=z.tarih;g('zekatNot').value=z.aciklama||'';
+  ac('modalZekat');
 }
 async function kaydetZekat(){
   const m=parseFloat(g('zekatMiktar').value);
   if(!m||m<=0)return toast('⚠️ Geçerli miktar girin');
+  const id=g('zekatId').value;
+  const veri={urun:g('zekatUrun').value,miktar:m,tarih:g('zekatTarih').value||bugun(),aciklama:g('zekatNot').value.trim()||null};
   g('zekatKaydetBtn').disabled=true;
   try{
-    const {data,error}=await sb.from('bd_zekatlar').insert({sezon_id:V.aktifSezon,urun:g('zekatUrun').value,miktar:m,tarih:g('zekatTarih').value||bugun(),aciklama:g('zekatNot').value.trim()||null}).select().single();
-    if(error)throw error;
-    V.zekatlar.unshift(data);
+    if(id){
+      const {error}=await sb.from('bd_zekatlar').update(veri).eq('id',id);
+      if(error)throw error;
+      Object.assign(V.zekatlar.find(x=>x.id===id),veri);
+    }else{
+      const {data,error}=await sb.from('bd_zekatlar').insert({...veri,sezon_id:V.aktifSezon}).select().single();
+      if(error)throw error;
+      V.zekatlar.unshift(data);
+    }
     localStorage.setItem('bd_cache',JSON.stringify(V));
-    kapat('modalZekat');ciz();toast('🤲 Zekat kaydedildi, stoktan düşüldü');
+    kapat('modalZekat');ciz();toast(id?'✏️ Zekat kaydı güncellendi':'🤲 Zekat kaydedildi, stoktan düşüldü');
   }catch(e){hata(e,'Kaydedilemedi')}
   g('zekatKaydetBtn').disabled=false;
 }
