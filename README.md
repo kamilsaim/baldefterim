@@ -50,6 +50,7 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 
 | Sürüm | Öne çıkanlar |
 |-------|--------------|
+| **2.4.0** | Siparişlerde kısmi ödeme: 💰 butonu artık tutar soruyor, eksik ödeme "Kısmi" rozetiyle görünür ve alacak hesapları kalan borç üzerinden yapılır; sipariş kartları daha derli toplu (rozetler yan yana) |
 | **2.3.2** | iPhone'da ana ekrana eklenen uygulamada soldan sağa kaydırınca çıkan beyaz ekran giderildi |
 | **2.3.1** | Android geri tuşu artık uygulamada kalıyor: açık pencereyi kapatır, alt sekmeden Özet'e döner, çıkmak için iki kez basmak gerekir (oturum ekranına düşmez); müşteri adı yazarken baş harfler otomatik büyür |
 | **2.3.0** | Ayarlar'dan kendi ürünlerini ekleme/düzenleme ve ürün bazında zekata tabilik seçimi, stok ekranında hasat/devir/teslim/hediye/zekat kırılımı, siparişler ekranında ürün bazlı sipariş raporu (metin olarak paylaşılabilir) |
