@@ -283,7 +283,7 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
 <section class="sayfa" id="sayfa-stok">
   <div class="kart"><h3>📦 Sezon Stok Raporu</h3><div id="stokDetay"></div></div>
   <button class="btn btn-bal" style="margin-bottom:10px" onclick="acHasatModal()">➕ Hasat / Stok Girişi</button>
-  <div class="kart"><h3>🚜 Hasat Kayıtları <small id="hasatOzet" style="font-weight:400;color:var(--soluk);font-size:12px"></small></h3><div id="hasatListe"></div></div>
+  <div class="kart"><h3>🚜 Hasat Kayıtları</h3><div id="hasatOzet" style="font-size:12px;color:var(--soluk);line-height:1.6;margin-bottom:6px"></div><div id="hasatListe"></div></div>
 </section>
 
 <section class="sayfa" id="sayfa-zekat">
@@ -956,7 +956,11 @@ function cizStok(){
       </div>
       <div class="stok-kirilim">${satirlar}</div>
     </div>`}).join('');
-  g('hasatOzet').textContent=hasat.length?`(${miktarToplam(hasat)} giriş · ${stokToplam(st)} kalan)`:'';
+  const hasatUrunler=gorunurUrunler(st).filter(u=>hasat.some(h=>h.urun===u.id));
+  g('hasatOzet').innerHTML=hasatUrunler.map(u=>{
+    const giris=hasat.filter(h=>h.urun===u.id).reduce((a,h)=>a+ +h.miktar,0);
+    return `<div>${u.ikon} <b>${u.ad}:</b> ${sayi(giris)} ${u.birim} giriş · ${sayi(st[u.id].stok)} ${u.birim} kalan</div>`;
+  }).join('');
   g('hasatListe').innerHTML=hasat.length?hasat.map(h=>{
     const u=urun(h.urun);
     return `<div class="stok-satir">
@@ -975,12 +979,6 @@ function miktarToplam(liste){
 /* Zekat/hediye listeleri için kısa özet: "(3 kayıt · 12 kg)" */
 function miktarOzet(liste){
   return liste.length?`(${liste.length} kayıt · ${miktarToplam(liste)})`:'';
-}
-/* sezonVeri().st'teki depodaki stoku (d.stok) birime göre toplar — Hasat Kayıtları başlığındaki "kalan" için */
-function stokToplam(st){
-  const gruplar={};
-  gorunurUrunler(st).forEach(u=>{gruplar[u.birim]=(gruplar[u.birim]||0)+st[u.id].stok;});
-  return Object.entries(gruplar).map(([b,m])=>sayi(m)+' '+b).join(' + ')||'0';
 }
 function cizZekat(){
   const {zek,st,sip}=sezonVeri();
