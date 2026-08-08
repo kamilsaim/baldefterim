@@ -50,6 +50,8 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 
 | Sürüm | Öne çıkanlar |
 |-------|--------------|
+| **2.5.1** | Sipariş aramasına temizleme (✕) butonu; Zekat/Hediyeler/Hasat Kayıtları başlıklarında kısa özet (kayıt sayısı, giriş/kalan miktar) |
+| **2.5.0** | Hediyeler artık Zekat ekranında ayrı bir liste; Ayarlar popup'tan tam sayfaya taşındı; eski sezondan kalan (devir) stok istenildiği an elle eklenebiliyor ve bir satışta "bu sezon / eski sezon" seçilebiliyor |
 | **2.4.0** | Siparişlerde kısmi ödeme: 💰 butonu artık tutar soruyor, eksik ödeme "Kısmi" rozetiyle görünür ve alacak hesapları kalan borç üzerinden yapılır; sipariş kartları daha derli toplu (rozetler yan yana) |
 | **2.3.2** | iPhone'da ana ekrana eklenen uygulamada soldan sağa kaydırınca çıkan beyaz ekran giderildi |
 | **2.3.1** | Android geri tuşu artık uygulamada kalıyor: açık pencereyi kapatır, alt sekmeden Özet'e döner, çıkmak için iki kez basmak gerekir (oturum ekranına düşmez); müşteri adı yazarken baş harfler otomatik büyür |
