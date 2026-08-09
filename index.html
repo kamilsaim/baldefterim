@@ -1025,7 +1025,7 @@ function cizZekat(){
     return `<div class="stok-satir">
       <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">🎁</div>
       <div class="stok-bilgi"><b>${o.musteri}</b><small>${sayi(o.miktar)} ${u.birim} ${u.ad} · ${trhF(o.tarih)}${o.teslim?' · ✅ teslim edildi':' · 📋 ön sipariş'}</small></div>
-      <div class="stok-adet"><small><button style="color:var(--bal-koyu);font-size:11px;font-weight:700;margin-right:8px" ${cevrimdisi?'disabled':''} onclick="duzenleSiparis('${o.id}')">Düzenle</button><button style="color:var(--kirmizi);font-size:11px;font-weight:700" ${cevrimdisi?'disabled':''} onclick="silSiparis('${o.id}')">Sil</button></small></div>
+      <div class="stok-adet"><small>${o.teslim?`<button style="color:var(--bal-koyu);font-size:11px;font-weight:700;margin-right:8px" ${cevrimdisi?'disabled':''} onclick="teslimGeriAl('${o.id}')">↩️ Geri Al</button>`:`<button style="color:var(--yesil);font-size:11px;font-weight:700;margin-right:8px" ${cevrimdisi?'disabled':''} onclick="teslimEt('${o.id}')">✅ Teslim Et</button>`}<button style="color:var(--bal-koyu);font-size:11px;font-weight:700;margin-right:8px" ${cevrimdisi?'disabled':''} onclick="duzenleSiparis('${o.id}')">Düzenle</button><button style="color:var(--kirmizi);font-size:11px;font-weight:700" ${cevrimdisi?'disabled':''} onclick="silSiparis('${o.id}')">Sil</button></small></div>
     </div>`}).join(''):'<div class="bos" style="padding:20px"><p>Bu sezon hediye verilmedi.</p></div>';
 }
 
