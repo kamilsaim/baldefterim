@@ -717,11 +717,26 @@ function sezonVeri(sezonId){
   const sip=V.siparisler.filter(o=>o.sezon_id===s);
   const zek=V.zekatlar.filter(z=>z.sezon_id===s);
   const st={};
+  const hasatKalan={};
+  /* Bir ürün grubunun (hasat ya da devir) girişlerini tarihe göre eskiden yeniye sırayla tüketip
+     her kaydın kendine has kalanını hesaplar (FIFO) */
+  function fifoDagit(kayitlar,tuketim){
+    let kalanTuketim=tuketim;
+    kayitlar.slice().sort((a,b)=>new Date(a.tarih)-new Date(b.tarih)).forEach(k=>{
+      const mik=+k.miktar;
+      const dus=Math.min(mik,kalanTuketim);
+      hasatKalan[k.id]=mik-dus;
+      kalanTuketim-=dus;
+    });
+  }
   URUNLER.forEach(u=>{
-    const hasatMik=hasat.filter(h=>h.urun===u.id&&h.tip!=='devir').reduce((a,h)=>a+ +h.miktar,0);
-    const devirMik=hasat.filter(h=>h.urun===u.id&&h.tip==='devir').reduce((a,h)=>a+ +h.miktar,0);
+    const hasatKayitlar=hasat.filter(h=>h.urun===u.id&&h.tip!=='devir');
+    const devirKayitlar=hasat.filter(h=>h.urun===u.id&&h.tip==='devir');
+    const hasatMik=hasatKayitlar.reduce((a,h)=>a+ +h.miktar,0);
+    const devirMik=devirKayitlar.reduce((a,h)=>a+ +h.miktar,0);
     const teslimMik=sip.filter(o=>o.urun===u.id&&o.teslim).reduce((a,o)=>a+ +o.miktar,0);
     const teslimDevirMik=sip.filter(o=>o.urun===u.id&&o.teslim&&o.kaynak==='devir').reduce((a,o)=>a+ +o.miktar,0);
+    const teslimHasatMik=teslimMik-teslimDevirMik;
     const hediyeMik=sip.filter(o=>o.urun===u.id&&o.teslim&&o.hediye).reduce((a,o)=>a+ +o.miktar,0);
     const rezerve=sip.filter(o=>o.urun===u.id&&!o.teslim).reduce((a,o)=>a+ +o.miktar,0);
     const zekVer=zek.filter(z=>z.urun===u.id).reduce((a,z)=>a+ +z.miktar,0);
@@ -733,8 +748,10 @@ function sezonVeri(sezonId){
       satisTeslim:teslimMik-hediyeMik,hediye:hediyeMik,rezerve,zekVer,
       zekatBorc:Math.max(0,zekatHesap-zekVer),zekatHesap,
       stok,mevcut:stok-rezerve};
+    fifoDagit(hasatKayitlar,teslimHasatMik+zekVer);
+    fifoDagit(devirKayitlar,teslimDevirMik);
   });
-  return {hasat,sip,zek,st};
+  return {hasat,sip,zek,st,hasatKalan};
 }
 
 /* ═══════════════ ÇİZİMLER ═══════════════ */
@@ -935,7 +952,7 @@ function cizSiparisler(){
     </div>`}).join(''):'<div class="bos"><div class="bos-ikon">📋</div><p>Bu filtreye uyan sipariş bulunamadı.</p></div>';
 }
 function cizStok(){
-  const {hasat,st}=sezonVeri();
+  const {hasat,st,hasatKalan}=sezonVeri();
   g('stokDetay').innerHTML=gorunurUrunler(st).map(u=>{
     const d=st[u.id];
     /* Kırılım alt alta; hasat hariç değeri 0 olan satır gizlenir */
@@ -966,7 +983,7 @@ function cizStok(){
     return `<div class="stok-satir">
       <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">${h.tip==='devir'?'🔄':u.ikon}</div>
       <div class="stok-bilgi"><b>${u.ad} ${h.tip==='devir'?'(Devir)':''}</b><small>${trhF(h.tarih)}${h.aciklama?' · '+h.aciklama:''}</small></div>
-      <div class="stok-adet"><b>+${sayi(h.miktar)} ${u.birim}</b>
+      <div class="stok-adet"><b>+${sayi(h.miktar)} ${u.birim}</b><small>${sayi(hasatKalan[h.id]||0)} ${u.birim} kalan</small>
         <small><button style="color:var(--bal-koyu);font-size:11px;font-weight:700;margin-right:8px" ${cevrimdisi?'disabled':''} onclick="duzenleHasat('${h.id}')">Düzenle</button><button style="color:var(--kirmizi);font-size:11px;font-weight:700" ${cevrimdisi?'disabled':''} onclick="silHasat('${h.id}')">Sil</button></small></div>
     </div>`}).join(''):'<div class="bos"><div class="bos-ikon">🚜</div><p>Henüz hasat girişi yok.<br>Ağustos hasadını buradan ekle!</p></div>';
 }
