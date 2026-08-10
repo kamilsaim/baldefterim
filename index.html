@@ -829,7 +829,7 @@ function cizOzet(){
     if(!adet)return '';
     return `<div class="stok-satir">
       <div class="urun-hex" style="background:${u.renk}22;color:${u.renk}">${u.ikon}</div>
-      <div class="stok-bilgi"><b>${u.ad}</b><small>${sayi(adet)} ${u.birim} satıldı</small></div>
+      <div class="stok-bilgi"><b>${u.ad}</b><small>${sayi(adet)} ${u.birim} satıldı · ${siparisleri.length} sipariş</small></div>
       <div class="stok-adet"><b>${para(tutar)}</b></div>
     </div>`}).join('')||'<div class="bos"><div class="bos-ikon">💰</div><p>Henüz satış yok.</p></div>';
   g('ozetStok').innerHTML=gorunurUrunler(st).map(u=>{
