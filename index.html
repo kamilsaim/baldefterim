@@ -856,8 +856,8 @@ function cizOzetAlacak(borcSip,toplamAlacak){
   const grup=new Map();
   borcSip.forEach(o=>{
     const k=(o.musteri||'').trim().toLocaleLowerCase('tr');
-    const v=grup.get(k)||{ad:(o.musteri||'').trim(),tel:'',tutar:0,adet:0};
-    v.tutar+=kalanT(o);v.adet++;if(!v.tel&&o.tel)v.tel=o.tel;
+    const v=grup.get(k)||{ad:(o.musteri||'').trim(),tel:'',tutar:0,adet:0,ids:[]};
+    v.tutar+=kalanT(o);v.adet++;if(!v.tel&&o.tel)v.tel=o.tel;v.ids.push(o.id);
     grup.set(k,v);
   });
   const sirali=[...grup.values()].sort((a,b)=>b.tutar-a.tutar);
@@ -865,10 +865,11 @@ function cizOzetAlacak(borcSip,toplamAlacak){
   g('ozetAlacak').innerHTML=ilk.map(m=>{
     const tel=telTemiz(m.tel);
     const mesaj=encodeURIComponent(`Merhaba ${m.ad}, bal siparişinizin ${para(m.tutar)} tutarındaki ödemesi bekliyor. İyi günler.`);
-    return `<div class="stok-satir">
+    const git=m.adet===1?`duzenleSiparis('${m.ids[0]}')`:`musteriGecmis(decodeURIComponent('${encodeURIComponent(m.ad)}'))`;
+    return `<div class="stok-satir" style="cursor:pointer" onclick="${git}">
       <div class="urun-hex" style="background:var(--kirmizi-a);color:var(--kirmizi);width:34px;height:34px;font-size:15px">🧾</div>
-      <div class="stok-bilgi"><b style="cursor:pointer;text-decoration:underline dotted var(--soluk)" onclick="musteriGecmis(decodeURIComponent('${encodeURIComponent(m.ad)}'))">${m.ad}</b>
-        <small>${m.adet} sipariş${tel?` · <a href="https://wa.me/${tel}?text=${mesaj}" target="_blank" style="color:var(--yesil);font-weight:700;text-decoration:none">💬 Hatırlat</a>`:''}</small></div>
+      <div class="stok-bilgi"><b style="text-decoration:underline dotted var(--soluk)">${m.ad}</b>
+        <small>${m.adet} sipariş${tel?` · <a href="https://wa.me/${tel}?text=${mesaj}" target="_blank" style="color:var(--yesil);font-weight:700;text-decoration:none" onclick="event.stopPropagation()">💬 Hatırlat</a>`:''}</small></div>
       <div class="stok-adet"><b style="color:var(--kirmizi)">${para(m.tutar)}</b></div>
     </div>`}).join('')
     +(sirali.length>3?`<div class="stok-satir"><div class="stok-bilgi"><small>+ ${sirali.length-3} kişi daha</small></div><div class="stok-adet"><small>${para(sirali.slice(3).reduce((a,m)=>a+m.tutar,0))}</small></div></div>`:'')
@@ -1748,7 +1749,7 @@ function musteriGecmis(ad){
   g('musteriListe').innerHTML=liste.map(o=>{
     const u=urun(o.urun);
     const sezonAd=V.sezonlar.find(s=>s.id===o.sezon_id)?.ad||'—';
-    return `<div class="stok-satir">
+    return `<div class="stok-satir" style="cursor:pointer" onclick="kapat('modalMusteri');duzenleSiparis('${o.id}')">
       <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">${u.ikon}</div>
       <div class="stok-bilgi"><b>${sayi(o.miktar)} ${u.birim} ${u.ad}${o.hediye?' · 🎁':''}</b>
         <small>${sezonAd} · ${trhF(o.tarih)} · ${o.teslim?'✅ Teslim':'📋 Bekliyor'}${!o.hediye?(tamOdendi(o)?' · 💰 Ödendi':kismiMi(o)?' · 🟡 Kısmi '+para(odenenT(o)):' · ⏳ Ödeme bekliyor'):''}</small></div>
