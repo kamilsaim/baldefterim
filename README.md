@@ -50,7 +50,7 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 
 | Sürüm | Öne çıkanlar |
 |-------|--------------|
-| **2.5.1** | Sipariş aramasına temizleme (✕) butonu; Zekat/Hediyeler/Hasat Kayıtları başlıklarında kısa özet (kayıt sayısı, giriş/kalan miktar) |
+| **2.5.1** | Sipariş aramasına temizleme (✕) butonu; Zekat/Hediyeler/Hasat Kayıtları başlıklarında kısa özet (kayıt sayısı, giriş/kalan miktar); hasat kayıtlarında her girişin kendi kalanı (FIFO) ve ürün bazında özet; hediyeler listesinde teslim et/geri al; ana sayfa özetinde ürün bazlı sipariş adedi ve alacaklar kartından siparişe gitme |
 | **2.5.0** | Hediyeler artık Zekat ekranında ayrı bir liste; Ayarlar popup'tan tam sayfaya taşındı; eski sezondan kalan (devir) stok istenildiği an elle eklenebiliyor ve bir satışta "bu sezon / eski sezon" seçilebiliyor |
 | **2.4.0** | Siparişlerde kısmi ödeme: 💰 butonu artık tutar soruyor, eksik ödeme "Kısmi" rozetiyle görünür ve alacak hesapları kalan borç üzerinden yapılır; sipariş kartları daha derli toplu (rozetler yan yana) |
 | **2.3.2** | iPhone'da ana ekrana eklenen uygulamada soldan sağa kaydırınca çıkan beyaz ekran giderildi |
@@ -65,6 +65,15 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 | **2.1.5** | Header'da iPhone çentik/güvenli alan düzeltmesi, sipariş modalında ürün seçimi butonlaştırıldı, tüm popuplar ekran ortasında açılıyor, teslim onayı popup'ı eklendi |
 | **2.1.1** | Temizlenmiş logo ve uygulama ikonları |
 | **2.0.0** | Supabase'e taşınan çok kullanıcılı sürüm (Google girişi, RLS) |
+
+### Play Store sürümleri
+
+Uygulama kabuğu canlı siteyi çektiği için her sürüm yeni AAB gerektirmez; yalnızca native/manifest değişikliklerinde yeniden derlenir.
+
+| versionCode | versionName | Yayın notu |
+|-------------|-------------|------------|
+| 3 | 2.5.1 | Ürün yönetimi ve ürün bazlı stok takibi; sipariş raporu, kısmi ödeme (peşin/kapora) ve alacak özeti; hediyeler zekât sayfasına taşındı (teslim et/geri al); hasat girişlerinde kalan miktar takibi ve kayıt düzenleme; arama, özet başlıklar; Android geri tuşu ve iOS kaydırma jesti düzeltmeleri |
+| 2 | 2.2.1 | Google ile giriş hatası düzeltmesi (deep-link OAuth akışı) |
 
 ## Katkı
 
