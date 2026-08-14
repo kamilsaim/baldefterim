@@ -50,6 +50,7 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 
 | Sürüm | Öne çıkanlar |
 |-------|--------------|
+| **2.5.2** | iOS ana ekrana eklenen PWA'da alt menü ve üst bar konumlandırma düzeltmesi (viewport-fit=cover kaldırıldı); dikey elastic scroll (bounce) engellendi |
 | **2.5.1** | Sipariş aramasına temizleme (✕) butonu; Zekat/Hediyeler/Hasat Kayıtları başlıklarında kısa özet (kayıt sayısı, giriş/kalan miktar); hasat kayıtlarında her girişin kendi kalanı (FIFO) ve ürün bazında özet; hediyeler listesinde teslim et/geri al; ana sayfa özetinde ürün bazlı sipariş adedi ve alacaklar kartından siparişe gitme |
 | **2.5.0** | Hediyeler artık Zekat ekranında ayrı bir liste; Ayarlar popup'tan tam sayfaya taşındı; eski sezondan kalan (devir) stok istenildiği an elle eklenebiliyor ve bir satışta "bu sezon / eski sezon" seçilebiliyor |
 | **2.4.0** | Siparişlerde kısmi ödeme: 💰 butonu artık tutar soruyor, eksik ödeme "Kısmi" rozetiyle görünür ve alacak hesapları kalan borç üzerinden yapılır; sipariş kartları daha derli toplu (rozetler yan yana) |
