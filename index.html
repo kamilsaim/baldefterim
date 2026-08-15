@@ -1151,7 +1151,7 @@ function sipUrunButonlariCiz(){
   const liste=aktifUrunler().some(u=>u.id===secili)||!secili?aktifUrunler():[...aktifUrunler(),urun(secili)];
   g('sipUrunBtn').innerHTML=liste.map(u=>`<button type="button" class="urun-btn ${secili===u.id?'aktif':''}" onclick="sipUrunSec('${u.id}')"><span>${u.ikon}</span>${u.ad}</button>`).join('');
 }
-function sipUrunSec(id){g('sipUrun').value=id;sipUrunButonlariCiz();sipKaynakGuncelle();sipCitaGuncelle();fiyatOner()}
+function sipUrunSec(id){g('sipUrun').value=id;sipUrunButonlariCiz();sipKaynakGuncelle();_sipCitaElle=false;sipCitaGuncelle();citaOner();fiyatOner()}
 /* Seçilen ürünün devir (eski sezon) stoğu varsa kaynak anahtarını göster, yoksa gizle+sıfırla */
 function sipKaynakGuncelle(){
   const d=sezonVeri().st[g('sipUrun').value];
