@@ -1666,17 +1666,17 @@ function raporVeri(sezonId){
   const zek=sezonId?V.zekatlar.filter(z=>z.sezon_id===sezonId):V.zekatlar;
   const st=sezonId?sezonVeri(sezonId).st:null;
   const bos=()=>({satisAdet:0,satisMik:0,satisTutar:0,tahsil:0,alacak:0,
-    hediyeAdet:0,hediyeMik:0,zekatMik:0,bekleyenAdet:0,bekleyenTutar:0,stokDeger:0});
+    hediyeAdet:0,hediyeMik:0,zekatMik:0,bekleyenAdet:0,bekleyenTutar:0,stokDeger:0,citaSatis:0});
   const gen=bos(),urunler=new Map();
   const al=id=>{if(!urunler.has(id))urunler.set(id,bos());return urunler.get(id)};
   sip.forEach(o=>{
-    const d=al(o.urun),m=+o.miktar||0,t=efTutar(o);
+    const d=al(o.urun),m=+o.miktar||0,t=efTutar(o),c=+o.cita_adet||0;
     if(o.hediye){
-      if(o.teslim){d.hediyeAdet++;d.hediyeMik+=m;gen.hediyeAdet++;gen.hediyeMik+=m;}
+      if(o.teslim){d.hediyeAdet++;d.hediyeMik+=m;gen.hediyeAdet++;gen.hediyeMik+=m;d.citaSatis+=c;gen.citaSatis+=c;}
       return; /* hediye satış/tahsilat/alacak hesabına girmez */
     }
     if(o.teslim){
-      d.satisAdet++;d.satisMik+=m;d.satisTutar+=t;gen.satisAdet++;gen.satisMik+=m;gen.satisTutar+=t;
+      d.satisAdet++;d.satisMik+=m;d.satisTutar+=t;d.citaSatis+=c;gen.satisAdet++;gen.satisMik+=m;gen.satisTutar+=t;gen.citaSatis+=c;
       const alinan=odenenT(o),kalan=t-alinan;
       d.tahsil+=alinan;gen.tahsil+=alinan;
       if(kalan>0.005){d.alacak+=kalan;gen.alacak+=kalan;}
@@ -1728,19 +1728,21 @@ function cizRapor(){
     ${tekSezon?st('Kalan stok değeri',para(gen.stokDeger)):''}
   </div>`;
   if(urunSatir.length){
+    const citaVarMi=urunSatir.some(({u})=>u.cita);
     const hucre=({u,d})=>`<tr>
       <td>${u.ikon} ${u.ad}</td>
       <td>${sayi(d.satisMik)}</td><td>${para(d.satisTutar)}</td>
       <td>${d.satisMik?para(d.satisTutar/d.satisMik):'—'}</td>
       <td>${para(d.tahsil)}</td><td>${para(d.alacak)}</td>
-      <td>${sayi(d.hediyeMik)}</td><td>${sayi(d.zekatMik)}</td></tr>`;
+      <td>${sayi(d.hediyeMik)}</td><td>${sayi(d.zekatMik)}</td>
+      ${citaVarMi?`<td>${u.cita?d.citaSatis:'—'}</td>`:''}</tr>`;
     h+=`<div class="rap-blok"><h4>Ürün Bazlı</h4><div class="rap-kaydir"><table class="rap-tablo">
-      <thead><tr><th>Ürün</th><th>Satış</th><th>Tutar</th><th>Ort. ₺</th><th>Tahsil</th><th>Alacak</th><th>Hediye</th><th>Zekat</th></tr></thead>
+      <thead><tr><th>Ürün</th><th>Satış</th><th>Tutar</th><th>Ort. ₺</th><th>Tahsil</th><th>Alacak</th><th>Hediye</th><th>Zekat</th>${citaVarMi?'<th>Çıta</th>':''}</tr></thead>
       <tbody>${urunSatir.map(hucre).join('')}
       <tr class="toplam"><td>TOPLAM</td><td>${sayi(gen.satisMik)}</td><td>${para(gen.satisTutar)}</td>
         <td>${gen.satisMik?para(gen.satisTutar/gen.satisMik):'—'}</td>
         <td>${para(gen.tahsil)}</td><td>${para(gen.alacak)}</td>
-        <td>${sayi(gen.hediyeMik)}</td><td>${sayi(gen.zekatMik)}</td></tr>
+        <td>${sayi(gen.hediyeMik)}</td><td>${sayi(gen.zekatMik)}</td>${citaVarMi?`<td>${gen.citaSatis}</td>`:''}</tr>
       </tbody></table></div></div>`;
   }
   if(musteriler.length){
@@ -1837,10 +1839,12 @@ async function excelIndir(){
   const stokSayfa=gorunurUrunler(st).map(u=>{const d=st[u.id];return{
     'Ürün':u.ad,'Birim':u.birim,'Hasat':d.hasat,'Devir':d.devir,'Teslim (Satış)':d.satisTeslim,
     'Hediye':d.hediye,'Zekat Verilen':d.zekVer,'Depoda':d.stok,'Rezerve':d.rezerve,'Satılabilir':d.mevcut,
-    'Zekat Hesaplanan (%10)':d.zekatHesap,'Zekat Kalan':d.zekatBorc}});
+    'Zekat Hesaplanan (%10)':d.zekatHesap,'Zekat Kalan':d.zekatBorc,
+    'Kalan Çıta':u.cita?citaHesapla(d.stok):''}});
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(stokSayfa),'Stok Özeti');
   const sipSayfa=sip.map(o=>{const u=urun(o.urun);return{
     'Müşteri':o.musteri,'Telefon':o.tel||'','Ürün':u.ad,'Miktar':+o.miktar,'Birim':u.birim,
+    'Çıta':u.cita?(+o.cita_adet||0):'',
     'Birim Fiyat':+o.fiyat,'Tutar':o.hediye?0:efTutar(o),'Hediye':o.hediye?'Evet':'',
     'Sipariş Tarihi':o.tarih,'Durum':o.teslim?'Teslim edildi':'Ön sipariş','Teslim Tarihi':o.teslim_tarih||'',
     'Ödeme':o.hediye?'-':(tamOdendi(o)?'Alındı':kismiMi(o)?'Kısmi':'Bekliyor'),
