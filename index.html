@@ -359,23 +359,31 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
     </div>
     <label>Ürün *</label>
     <div class="urun-secim" id="sipUrunBtn"></div>
-    <div class="anahtar-satir" id="sipKaynakSatir" style="display:none">
-      <b>🔄 Eski sezon (devir) stoğundan düş</b>
-      <label class="anahtar"><input type="checkbox" id="sipDevirKaynak"><span class="kaydirici"></span></label>
+    <div class="satir-2">
+      <div class="anahtar-satir" id="sipKaynakSatir" style="display:none">
+        <b>🔄 Eski sezon (devir)</b>
+        <label class="anahtar"><input type="checkbox" id="sipDevirKaynak"><span class="kaydirici"></span></label>
+      </div>
+      <div class="anahtar-satir">
+        <b>🎁 Hediye</b>
+        <label class="anahtar"><input type="checkbox" id="sipHediye" onchange="tutarGuncelle()"><span class="kaydirici"></span></label>
+      </div>
     </div>
     <div class="satir-2">
-      <div><label>Miktar *</label><input id="sipMiktar" type="number" step="0.1" min="0" placeholder="0" oninput="fiyatDegisti()"></div>
+      <div><label>Miktar *</label><input id="sipMiktar" type="number" step="0.1" min="0" placeholder="0" oninput="fiyatDegisti();citaOner()"></div>
       <div><label>Birim Fiyat (₺)</label><input id="sipFiyat" type="number" step="1" min="0" oninput="fiyatDegisti()"></div>
     </div>
-    <label>Toplam (₺)</label><input id="sipToplam" type="number" step="1" min="0" oninput="toplamElle()" style="background:#FBF6EA;font-weight:800">
+    <div class="satir-2" id="sipCitaSatir" style="display:none">
+      <div><label>Çıta Adedi</label><input id="sipCita" type="number" step="1" min="0" placeholder="0" oninput="sipCitaElle()"></div>
+      <div></div>
+    </div>
+    <div class="satir-2">
+      <div><label>Toplam (₺)</label><input id="sipToplam" type="number" step="1" min="0" oninput="toplamElle()" style="background:#FBF6EA;font-weight:800"></div>
+      <div><label>Alınan Tutar (₺)</label><input id="sipOdenen" type="number" step="1" min="0" placeholder="0" oninput="odenenIpucu()"></div>
+    </div>
     <div id="sipToplamOto" style="font-size:12px;color:var(--soluk);margin-top:3px"></div>
-    <label>Alınan Tutar (₺)</label><input id="sipOdenen" type="number" step="1" min="0" placeholder="0" oninput="odenenIpucu()">
     <div id="sipOdenenBilgi" style="font-size:12px;color:var(--soluk);margin-top:3px"></div>
     <label>Not</label><textarea id="sipNot" rows="2" placeholder="İsteğe bağlı not..."></textarea>
-    <div class="anahtar-satir">
-      <b>🎁 Hediye olarak verilecek</b>
-      <label class="anahtar"><input type="checkbox" id="sipHediye" onchange="tutarGuncelle()"><span class="kaydirici"></span></label>
-    </div>
     <button class="btn btn-bal" id="sipKaydetBtn" onclick="kaydetSiparis()">💾 Kaydet</button>
   </div>
 </div>
@@ -1143,13 +1151,26 @@ function sipUrunButonlariCiz(){
   const liste=aktifUrunler().some(u=>u.id===secili)||!secili?aktifUrunler():[...aktifUrunler(),urun(secili)];
   g('sipUrunBtn').innerHTML=liste.map(u=>`<button type="button" class="urun-btn ${secili===u.id?'aktif':''}" onclick="sipUrunSec('${u.id}')"><span>${u.ikon}</span>${u.ad}</button>`).join('');
 }
-function sipUrunSec(id){g('sipUrun').value=id;sipUrunButonlariCiz();sipKaynakGuncelle();fiyatOner()}
+function sipUrunSec(id){g('sipUrun').value=id;sipUrunButonlariCiz();sipKaynakGuncelle();sipCitaGuncelle();fiyatOner()}
 /* Seçilen ürünün devir (eski sezon) stoğu varsa kaynak anahtarını göster, yoksa gizle+sıfırla */
 function sipKaynakGuncelle(){
   const d=sezonVeri().st[g('sipUrun').value];
   const varDevir=d&&d.devirKalan>0.005;
   g('sipKaynakSatir').style.display=varDevir?'':'none';
   if(!varDevir)g('sipDevirKaynak').checked=false;
+}
+/* Seçilen ürün çıta takipliyse çıta satırını göster, değilse gizle+sıfırla */
+let _sipCitaElle=false;
+function sipCitaGuncelle(){
+  const u=urun(g('sipUrun').value);
+  g('sipCitaSatir').style.display=u&&u.cita?'':'none';
+  if(!u||!u.cita){g('sipCita').value='';_sipCitaElle=false;}
+}
+function sipCitaElle(){_sipCitaElle=true}
+function citaOner(){
+  if(_sipCitaElle)return;
+  const u=urun(g('sipUrun').value);
+  if(u&&u.cita)g('sipCita').value=citaHesapla(g('sipMiktar').value);
 }
 
 /* Daha önce girilmiş müşteri adları (tüm sezonlar, en yeniden eskiye, tekilleştirilmiş).
@@ -1184,9 +1205,10 @@ function musteriSecildi(){
 function acSiparisModal(){
   if(cevrimdisi)return toast('📡 Çevrimdışı: kayıt eklenemez');
   g('sipModalBaslik').textContent='Yeni Sipariş';
-  ['sipId','sipMusteri','sipTel','sipMiktar','sipNot','sipOdenen'].forEach(i=>g(i).value='');
+  ['sipId','sipMusteri','sipTel','sipMiktar','sipNot','sipOdenen','sipCita'].forEach(i=>g(i).value='');
   g('sipHediye').checked=false;g('sipDevirKaynak').checked=false;g('sipTarih').value=bugun();
-  g('sipUrun').value=(aktifUrunler()[0]||URUNLER[0]).id;sipUrunButonlariCiz();sipKaynakGuncelle();
+  _sipCitaElle=false;
+  g('sipUrun').value=(aktifUrunler()[0]||URUNLER[0]).id;sipUrunButonlariCiz();sipKaynakGuncelle();sipCitaGuncelle();
   musteriOnerileriCiz();
   _toplamElle=false;fiyatOner();ac('modalSiparis');
 }
@@ -1198,6 +1220,8 @@ function duzenleSiparis(id){
   g('sipUrun').value=o.urun;sipUrunButonlariCiz();sipKaynakGuncelle();g('sipDevirKaynak').checked=o.kaynak==='devir';g('sipMiktar').value=o.miktar;g('sipFiyat').value=o.fiyat;
   g('sipTarih').value=o.tarih;g('sipNot').value=o.aciklama||'';
   g('sipHediye').checked=!!o.hediye;
+  _sipCitaElle=o.cita_adet!=null;sipCitaGuncelle();
+  if(o.cita_adet!=null)g('sipCita').value=o.cita_adet;
   _toplamElle=(!o.hediye&&o.tutar!=null);
   g('sipOdenen').value=odenenT(o)||'';
   tutarGuncelle();
@@ -1207,7 +1231,7 @@ function duzenleSiparis(id){
 }
 function fiyatOner(){g('sipFiyat').value=V.fiyatlar[g('sipUrun').value]||0;_toplamElle=false;tutarGuncelle()}
 let _toplamElle=false;
-function fiyatDegisti(){_toplamElle=false;tutarGuncelle()}
+function fiyatDegisti(){_toplamElle=false;tutarGuncelle();citaOner()}
 function toplamElle(){_toplamElle=true;tutarIpucu()}
 function efTutar(o){return o.hediye?0:(o.tutar!=null?+o.tutar:o.miktar*o.fiyat)}
 /* Çıta (bar) adedi önerisi: kg<=1.5 -> 0, sonrası her +2.5 kg'da +1 (elle düzeltilebilir öneri) */
@@ -1262,6 +1286,8 @@ async function kaydetSiparis(){
   if(alinan>toplamEf+0.005)return toast(`⚠️ Alınan tutar toplamdan fazla olamaz (${para(toplamEf)})`);
   const tamOdeme=!hediye&&alinan>0&&toplamEf-alinan<0.005;
   const eski=id?V.siparisler.find(x=>x.id===id):null;
+  const urunSecili=urun(g('sipUrun').value);
+  const citaVal=urunSecili&&urunSecili.cita?(parseInt(g('sipCita').value,10)||0):null;
   const veri={
     musteri, tel:g('sipTel').value.trim()||null,
     urun:g('sipUrun').value, miktar,
@@ -1271,7 +1297,8 @@ async function kaydetSiparis(){
     aciklama:g('sipNot').value.trim()||null, hediye,
     kaynak:g('sipDevirKaynak').checked?'devir':null,
     odenen:alinan, odendi:tamOdeme,
-    odeme_tarih:tamOdeme?(eski&&eski.odeme_tarih||bugun()):null
+    odeme_tarih:tamOdeme?(eski&&eski.odeme_tarih||bugun()):null,
+    cita_adet:citaVal
   };
   g('sipKaydetBtn').disabled=true;
   try{
