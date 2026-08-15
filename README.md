@@ -33,7 +33,8 @@ Her kullanıcı Google hesabıyla giriş yapar ve yalnızca kendi kayıtlarını
 - 📦 **Stok takibi** — hasat, devir, teslimat ve zekat düşümüyle güncel stok ve rezerve miktar
 - 🧾 **Sipariş yönetimi** — ön sipariş, teslimat ve ödeme durumu ayrı ayrı izlenir
 - 🎁 **Hediye desteği** — hediye siparişler satış ve alacak hesaplarına girmez, ama stoktan düşer
-- 🐝 **Kendi ürünlerin** — sabit listeyle sınırlı değilsin; kendi stok türünü ekle, her ürün için zekata tabi olup olmadığını seç
+- 🐝 **Kendi ürünlerin** — sabit listeyle sınırlı değilsin; kendi stok türünü ekle, her ürün için zekata tabi olup olmadığını ve çıta (bar) takibi yapılıp yapılmayacağını seç
+- 🧱 **Çıta takibi** — petek/karakovan gibi çıta bazlı satılan ürünlerde, kg'a göre çıta adedi otomatik önerilir (elle düzeltilebilir); hasat, sipariş, stok, rapor ve Excel'de görünür
 - 🕌 **Zekat takibi** — zekata tabi ürünlerde hasadın %10'u otomatik hesaplanır, sezon devrindeki stok zekata dahil edilmez
 - 🔄 **Sezon devri** — yeni sezon açılınca kalan stok otomatik olarak devredilir
 - 👥 **Müşteri geçmişi** — bir müşterinin tüm sezonlardaki siparişleri ve alacağı tek ekranda
@@ -50,6 +51,7 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 
 | Sürüm | Öne çıkanlar |
 |-------|--------------|
+| **2.6.0** | Petek/karakovan gibi çıta bazlı satılan ürünlerde çıta (bar) adedi takibi: kg'a göre otomatik önerilir, elle düzeltilebilir; hasat, sipariş, stok, rapor ve Excel çıktısında görünür; sipariş formunda tutar/alınan-tutar ve eski sezon/hediye seçenekleri yan yana |
 | **2.5.2** | iOS ana ekrana eklenen PWA'da alt menü ve üst bar konumlandırma düzeltmesi (viewport-fit=cover kaldırıldı); dikey elastic scroll (bounce) engellendi |
 | **2.5.1** | Sipariş aramasına temizleme (✕) butonu; Zekat/Hediyeler/Hasat Kayıtları başlıklarında kısa özet (kayıt sayısı, giriş/kalan miktar); hasat kayıtlarında her girişin kendi kalanı (FIFO) ve ürün bazında özet; hediyeler listesinde teslim et/geri al; ana sayfa özetinde ürün bazlı sipariş adedi ve alacaklar kartından siparişe gitme |
 | **2.5.0** | Hediyeler artık Zekat ekranında ayrı bir liste; Ayarlar popup'tan tam sayfaya taşındı; eski sezondan kalan (devir) stok istenildiği an elle eklenebiliyor ve bir satışta "bu sezon / eski sezon" seçilebiliyor |
