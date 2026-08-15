@@ -993,7 +993,11 @@ function cizStok(){
   const hasatUrunler=gorunurUrunler(st).filter(u=>hasat.some(h=>h.urun===u.id));
   g('hasatOzet').innerHTML=hasatUrunler.map(u=>{
     const giris=hasat.filter(h=>h.urun===u.id).reduce((a,h)=>a+ +h.miktar,0);
-    return `<div>${u.ikon} <b>${u.ad}:</b> ${sayi(giris)} ${u.birim} giriş · ${sayi(st[u.id].stok)} ${u.birim} kalan</div>`;
+    const kalanKg=st[u.id].stok;
+    if(!u.cita)return `<div>${u.ikon} <b>${u.ad}:</b> ${sayi(giris)} ${u.birim} giriş · ${sayi(kalanKg)} ${u.birim} kalan</div>`;
+    const girisCita=hasat.filter(h=>h.urun===u.id).reduce((a,h)=>a+(+h.cita_adet||0),0);
+    const kalanCita=citaHesapla(kalanKg);
+    return `<div>${u.ikon} <b>${u.ad}:</b> ${sayi(giris)} ${u.birim} (${girisCita} çıta) giriş · ${sayi(kalanKg)} ${u.birim} (${kalanCita} çıta) kalan</div>`;
   }).join('');
   g('hasatListe').innerHTML=hasat.length?hasat.map(h=>{
     const u=urun(h.urun);
