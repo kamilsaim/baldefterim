@@ -1,12 +1,17 @@
 <div align="center">
 
-<img src="ballogo.png" alt="Bal Defterim" width="240">
+<img src="ballogo.png" alt="Bal Defterim" width="220">
 
-# Bal Defterim
+# 🍯 Bal Defterim
 
 **Kovandan kavanoza, tek ekrandan takip**
 
 _Bal hasadı, ön sipariş, satış, stok, hediye ve zekat takibini tek yerde toplayan basit bir defter uygulaması._
+
+![Sürüm](https://img.shields.io/badge/sürüm-2.6.0-E8A013?style=flat-square)
+![PWA](https://img.shields.io/badge/PWA-ana%20ekrana%20eklenebilir-8B5E34?style=flat-square)
+![Vanilla JS](https://img.shields.io/badge/vanilla-JS-F5C24B?style=flat-square)
+![Supabase](https://img.shields.io/badge/backend-Supabase-3ECF8E?style=flat-square)
 
 [**▶ Uygulamayı Aç**](https://kamilsaim.github.io/baldefterim/)
 
@@ -30,18 +35,20 @@ Her kullanıcı Google hesabıyla giriş yapar ve yalnızca kendi kayıtlarını
 
 ## Öne çıkan özellikler
 
-- 📦 **Stok takibi** — hasat, devir, teslimat ve zekat düşümüyle güncel stok ve rezerve miktar
-- 🧾 **Sipariş yönetimi** — ön sipariş, teslimat ve ödeme durumu ayrı ayrı izlenir
-- 🎁 **Hediye desteği** — hediye siparişler satış ve alacak hesaplarına girmez, ama stoktan düşer
-- 🐝 **Kendi ürünlerin** — sabit listeyle sınırlı değilsin; kendi stok türünü ekle, her ürün için zekata tabi olup olmadığını ve çıta (bar) takibi yapılıp yapılmayacağını seç
-- 🧱 **Çıta takibi** — petek/karakovan gibi çıta bazlı satılan ürünlerde, kg'a göre çıta adedi otomatik önerilir (elle düzeltilebilir); hasat, sipariş, stok, rapor ve Excel'de görünür
-- 🕌 **Zekat takibi** — zekata tabi ürünlerde hasadın %10'u otomatik hesaplanır, sezon devrindeki stok zekata dahil edilmez
-- 🔄 **Sezon devri** — yeni sezon açılınca kalan stok otomatik olarak devredilir
-- 👥 **Müşteri geçmişi** — bir müşterinin tüm sezonlardaki siparişleri ve alacağı tek ekranda
-- 📊 **Sipariş raporu** — satış, tahsilat, alacak, hediye ve zekat rakamları ürün bazında tek ekranda; tek dokunuşla metin olarak paylaş
-- 📥 **Excel raporu** — stok, sipariş, hasat ve zekat verileri dört sayfalık raporla dışa aktarılır
-- 💾 **Yedek al / yükle** — verilerini JSON olarak indir, gerektiğinde aynı dosyadan geri yükle
-- 📡 **Çevrimdışı görüntüleme** — bağlantı yokken son senkronize veriler salt okunur açılır
+| | |
+|---|---|
+| 📦 **Stok takibi** | Hasat, devir, teslimat ve zekat düşümüyle güncel stok ve rezerve miktar |
+| 🧾 **Sipariş yönetimi** | Ön sipariş, teslimat ve ödeme durumu ayrı ayrı izlenir |
+| 🎁 **Hediye desteği** | Hediye siparişler satış ve alacak hesaplarına girmez, ama stoktan düşer |
+| 🐝 **Kendi ürünlerin** | Sabit listeyle sınırlı değilsin; kendi stok türünü ekle, her ürün için zekata tabilik ve çıta takibini ayrı ayrı seç |
+| 🧱 **Çıta takibi** | Petek/karakovan gibi çıta bazlı satılan ürünlerde kg'a göre çıta adedi otomatik önerilir (elle düzeltilebilir); hasat, sipariş, stok, rapor ve Excel'de görünür |
+| 🕌 **Zekat takibi** | Zekata tabi ürünlerde hasadın %10'u otomatik hesaplanır, sezon devrindeki stok zekata dahil edilmez |
+| 🔄 **Sezon devri** | Yeni sezon açılınca kalan stok otomatik olarak devredilir |
+| 👥 **Müşteri geçmişi** | Bir müşterinin tüm sezonlardaki siparişleri ve alacağı tek ekranda |
+| 📊 **Sipariş raporu** | Satış, tahsilat, alacak, hediye ve zekat rakamları ürün bazında tek ekranda; tek dokunuşla metin olarak paylaş |
+| 📥 **Excel raporu** | Stok, sipariş, hasat ve zekat verileri dört sayfalık raporla dışa aktarılır |
+| 💾 **Yedek al / yükle** | Verilerini JSON olarak indir, gerektiğinde aynı dosyadan geri yükle |
+| 📡 **Çevrimdışı görüntüleme** | Bağlantı yokken son senkronize veriler salt okunur açılır |
 
 ## Teknoloji
 
@@ -54,6 +61,12 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 | **2.6.0** | Petek/karakovan gibi çıta bazlı satılan ürünlerde çıta (bar) adedi takibi: kg'a göre otomatik önerilir, elle düzeltilebilir; hasat, sipariş, stok, rapor ve Excel çıktısında görünür; sipariş formunda tutar/alınan-tutar ve eski sezon/hediye seçenekleri yan yana |
 | **2.5.2** | iOS ana ekrana eklenen PWA'da alt menü ve üst bar konumlandırma düzeltmesi (viewport-fit=cover kaldırıldı); dikey elastic scroll (bounce) engellendi |
 | **2.5.1** | Sipariş aramasına temizleme (✕) butonu; Zekat/Hediyeler/Hasat Kayıtları başlıklarında kısa özet (kayıt sayısı, giriş/kalan miktar); hasat kayıtlarında her girişin kendi kalanı (FIFO) ve ürün bazında özet; hediyeler listesinde teslim et/geri al; ana sayfa özetinde ürün bazlı sipariş adedi ve alacaklar kartından siparişe gitme |
+
+<details>
+<summary>Daha eski sürümler</summary>
+
+| Sürüm | Öne çıkanlar |
+|-------|--------------|
 | **2.5.0** | Hediyeler artık Zekat ekranında ayrı bir liste; Ayarlar popup'tan tam sayfaya taşındı; eski sezondan kalan (devir) stok istenildiği an elle eklenebiliyor ve bir satışta "bu sezon / eski sezon" seçilebiliyor |
 | **2.4.0** | Siparişlerde kısmi ödeme: 💰 butonu artık tutar soruyor, eksik ödeme "Kısmi" rozetiyle görünür ve alacak hesapları kalan borç üzerinden yapılır; sipariş kartları daha derli toplu (rozetler yan yana) |
 | **2.3.2** | iPhone'da ana ekrana eklenen uygulamada soldan sağa kaydırınca çıkan beyaz ekran giderildi |
@@ -68,6 +81,8 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 | **2.1.5** | Header'da iPhone çentik/güvenli alan düzeltmesi, sipariş modalında ürün seçimi butonlaştırıldı, tüm popuplar ekran ortasında açılıyor, teslim onayı popup'ı eklendi |
 | **2.1.1** | Temizlenmiş logo ve uygulama ikonları |
 | **2.0.0** | Supabase'e taşınan çok kullanıcılı sürüm (Google girişi, RLS) |
+
+</details>
 
 ### Play Store sürümleri
 
