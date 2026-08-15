@@ -458,6 +458,10 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
       <input type="checkbox" id="urunZekat" checked>
       <label for="urunZekat" style="margin:0">Zekata tabi (hasadın %10'u)</label>
     </div>
+    <div class="anahtar-satir">
+      <input type="checkbox" id="urunCita">
+      <label for="urunCita" style="margin:0">Çıta (bar) takibi yapılsın</label>
+    </div>
     <label>Varsayılan Birim Fiyat (₺)</label><input id="urunFiyat" type="number" min="0" placeholder="0">
     <button class="btn btn-bal" id="urunKaydetBtn" onclick="kaydetUrun()">💾 Kaydet</button>
   </div>
@@ -516,10 +520,10 @@ const LOGO_TAM='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAAGBCAYAAAAXJG
    Kolon boşsa aşağıdaki varsayılanlar kullanılır. Kayıtlar `urun` alanında id string'i tuttuğu
    için buradaki id'ler ASLA değiştirilmemeli. */
 const URUNLER_VARSAYILAN=[
-  {id:'suzme',ad:'Süzme Bal',ikon:'🍯',renk:'#F5C24B',birim:'kg',zekat:true},
-  {id:'petek',ad:'Petek Bal',ikon:'🧇',renk:'#E8A013',birim:'kg',zekat:true},
-  {id:'karakovan',ad:'Karakovan',ikon:'🪵',renk:'#8B5E34',birim:'kg',zekat:true},
-  {id:'polen',ad:'Polen',ikon:'🌼',renk:'#D9A63F',birim:'kg',zekat:true}
+  {id:'suzme',ad:'Süzme Bal',ikon:'🍯',renk:'#F5C24B',birim:'kg',zekat:true,cita:false},
+  {id:'petek',ad:'Petek Bal',ikon:'🧇',renk:'#E8A013',birim:'kg',zekat:true,cita:true},
+  {id:'karakovan',ad:'Karakovan',ikon:'🪵',renk:'#8B5E34',birim:'kg',zekat:true,cita:true},
+  {id:'polen',ad:'Polen',ikon:'🌼',renk:'#D9A63F',birim:'kg',zekat:true,cita:false}
 ];
 const URUN_RENKLER=['#F5C24B','#E8A013','#8B5E34','#D9A63F','#4E8C50','#4A7BA6','#C2503C','#8E6BAF'];
 let URUNLER=URUNLER_VARSAYILAN.map(u=>({...u}));
@@ -1493,6 +1497,7 @@ function acUrunModal(id){
   g('urunAd').value=u?u.ad:'';
   g('urunBirim').value=u?u.birim:'kg';
   g('urunZekat').checked=u?u.zekat!==false:true;
+  g('urunCita').checked=u?u.cita===true:false;
   g('urunFiyat').value=u?(V.fiyatlar[u.id]||''):'';
   const renk=u?u.renk:URUN_RENKLER[URUNLER.length%URUN_RENKLER.length];
   g('urunRenkSecim').innerHTML=URUN_RENKLER.map(r=>`<button type="button" class="renk-btn" data-r="${r}" style="background:${r}" onclick="urunRenkSec('${r}')"></button>`).join('');
@@ -1509,7 +1514,8 @@ async function kaydetUrun(){
     ad,
     birim:g('urunBirim').value,
     renk:g('urunRenk').value||URUN_RENKLER[0],
-    zekat:g('urunZekat').checked
+    zekat:g('urunZekat').checked,
+    cita:g('urunCita').checked
   };
   const fiyat=parseFloat(g('urunFiyat').value)||0;
   if(id){
