@@ -407,8 +407,12 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
     <input type="hidden" id="hasatId">
     <input type="hidden" id="hasatTip" value="hasat">
     <div class="satir-2">
-      <div><label>Ürün *</label><select id="hasatUrun"></select></div>
-      <div><label>Miktar *</label><input id="hasatMiktar" type="number" step="0.1" min="0" placeholder="0"></div>
+      <div><label>Ürün *</label><select id="hasatUrun" onchange="_hasatCitaElle=false;hasatCitaGuncelle();hasatCitaOner()"></select></div>
+      <div><label>Miktar *</label><input id="hasatMiktar" type="number" step="0.1" min="0" placeholder="0" oninput="hasatCitaOner()"></div>
+    </div>
+    <div class="satir-2" id="hasatCitaSatir" style="display:none">
+      <div><label>Çıta Adedi</label><input id="hasatCita" type="number" step="1" min="0" placeholder="0" oninput="hasatCitaElle()"></div>
+      <div></div>
     </div>
     <label>Tarih</label><input id="hasatTarih" type="date">
     <label>Not</label><input id="hasatNot" placeholder="Örn: Ağustos hasadı, 12 kovan">
@@ -1321,7 +1325,8 @@ function acHasatModal(tip){
   if(cevrimdisi)return toast('📡 Çevrimdışı: kayıt eklenemez');
   g('hasatModalBaslik').textContent=tip==='devir'?'Eski Sezon Stoğu Ekle':'Hasat / Stok Girişi';
   g('hasatId').value='';g('hasatTip').value=tip==='devir'?'devir':'hasat';
-  urunSecenek('hasatUrun');g('hasatMiktar').value='';
+  urunSecenek('hasatUrun');g('hasatMiktar').value='';g('hasatCita').value='';_hasatCitaElle=false;
+  hasatCitaGuncelle();
   g('hasatNot').value=tip==='devir'?'Elle eklenen devir stoğu':'';g('hasatTarih').value=bugun();ac('modalHasat');
 }
 function duzenleHasat(id){
@@ -1331,13 +1336,29 @@ function duzenleHasat(id){
   g('hasatId').value=h.id;g('hasatTip').value=h.tip||'hasat';
   urunSecenek('hasatUrun',h.urun);g('hasatUrun').value=h.urun;
   g('hasatMiktar').value=h.miktar;g('hasatTarih').value=h.tarih;g('hasatNot').value=h.aciklama||'';
+  _hasatCitaElle=h.cita_adet!=null;hasatCitaGuncelle();
+  if(h.cita_adet!=null)g('hasatCita').value=h.cita_adet;
   ac('modalHasat');
+}
+let _hasatCitaElle=false;
+function hasatCitaGuncelle(){
+  const u=urun(g('hasatUrun').value);
+  g('hasatCitaSatir').style.display=u&&u.cita?'':'none';
+  if(!u||!u.cita){g('hasatCita').value='';_hasatCitaElle=false;}
+}
+function hasatCitaElle(){_hasatCitaElle=true}
+function hasatCitaOner(){
+  if(_hasatCitaElle)return;
+  const u=urun(g('hasatUrun').value);
+  if(u&&u.cita)g('hasatCita').value=citaHesapla(g('hasatMiktar').value);
 }
 async function kaydetHasat(){
   const m=parseFloat(g('hasatMiktar').value);
   if(!m||m<=0)return toast('⚠️ Geçerli miktar girin');
   const id=g('hasatId').value;
-  const veri={urun:g('hasatUrun').value,miktar:m,tarih:g('hasatTarih').value||bugun(),aciklama:g('hasatNot').value.trim()||null};
+  const uSec=urun(g('hasatUrun').value);
+  const citaVal=uSec&&uSec.cita?(parseInt(g('hasatCita').value,10)||0):null;
+  const veri={urun:g('hasatUrun').value,miktar:m,tarih:g('hasatTarih').value||bugun(),aciklama:g('hasatNot').value.trim()||null,cita_adet:citaVal};
   g('hasatKaydetBtn').disabled=true;
   try{
     if(id){
