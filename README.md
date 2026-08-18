@@ -12,8 +12,9 @@ _Bal hasadı, ön sipariş, satış, stok, hediye ve zekat takibini tek yerde to
 ![PWA](https://img.shields.io/badge/PWA-ana%20ekrana%20eklenebilir-8B5E34?style=flat-square)
 ![Vanilla JS](https://img.shields.io/badge/vanilla-JS-F5C24B?style=flat-square)
 ![Supabase](https://img.shields.io/badge/backend-Supabase-3ECF8E?style=flat-square)
+[![Google Play](https://img.shields.io/badge/Google%20Play-yayında-34A853?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.kamilsaim.baldefterim)
 
-[**▶ Uygulamayı Aç**](https://kamilsaim.github.io/baldefterim/)
+[**▶ Uygulamayı Aç**](https://kamilsaim.github.io/baldefterim/) &nbsp;·&nbsp; [**📱 Google Play'den İndir**](https://play.google.com/store/apps/details?id=com.kamilsaim.baldefterim)
 
 </div>
 
@@ -52,7 +53,7 @@ Her kullanıcı Google hesabıyla giriş yapar ve yalnızca kendi kayıtlarını
 
 ## Teknoloji
 
-Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](https://supabase.com) (Postgres + satır bazlı güvenlik + Google OAuth) kullanır. GitHub Pages üzerinden yayınlanır ve PWA olarak ana ekrana eklenebilir; Android için Capacitor ile kabuk APK'sı da mevcuttur.
+Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](https://supabase.com) (Postgres + satır bazlı güvenlik + Google OAuth) kullanır. GitHub Pages üzerinden yayınlanır ve PWA olarak ana ekrana eklenebilir; Android sürümü Capacitor ile paketlenir ve [Google Play'de yayındadır](https://play.google.com/store/apps/details?id=com.kamilsaim.baldefterim).
 
 ## Sürüm Geçmişi
 
