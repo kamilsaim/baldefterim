@@ -283,7 +283,7 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
 <section class="sayfa" id="sayfa-stok">
   <div class="kart"><h3>📦 Sezon Stok Raporu</h3><div id="stokDetay"></div></div>
   <button class="btn btn-bal" style="margin-bottom:10px" onclick="acHasatModal()">➕ Hasat / Stok Girişi</button>
-  <div class="kart"><h3>🚜 Hasat Kayıtları</h3><div id="hasatOzet" style="font-size:12px;color:var(--soluk);line-height:1.6;margin-bottom:6px"></div><div id="hasatListe"></div></div>
+  <div class="kart"><h3>🚜 Hasat Kayıtları</h3><div id="hasatListe"></div></div>
 </section>
 
 <section class="sayfa" id="sayfa-zekat">
@@ -990,15 +990,6 @@ function cizStok(){
       </div>
       <div class="stok-kirilim">${satirlar}</div>
     </div>`}).join('');
-  const hasatUrunler=gorunurUrunler(st).filter(u=>hasat.some(h=>h.urun===u.id));
-  g('hasatOzet').innerHTML=hasatUrunler.map(u=>{
-    const giris=hasat.filter(h=>h.urun===u.id).reduce((a,h)=>a+ +h.miktar,0);
-    const kalanKg=st[u.id].stok;
-    if(!u.cita)return `<div>${u.ikon} <b>${u.ad}:</b> ${sayi(giris)} ${u.birim} giriş · ${sayi(kalanKg)} ${u.birim} kalan</div>`;
-    const girisCita=hasat.filter(h=>h.urun===u.id).reduce((a,h)=>a+(+h.cita_adet||0),0);
-    const kalanCita=citaHesapla(kalanKg);
-    return `<div>${u.ikon} <b>${u.ad}:</b> ${sayi(giris)} ${u.birim} (${girisCita} çıta) giriş · ${sayi(kalanKg)} ${u.birim} (${kalanCita} çıta) kalan</div>`;
-  }).join('');
   g('hasatListe').innerHTML=hasat.length?hasat.map(h=>{
     const u=urun(h.urun);
     return `<div class="stok-satir">
