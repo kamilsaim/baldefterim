@@ -178,6 +178,7 @@ nav button{position:relative}
 nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50% - 16px);width:8px;height:8px;border-radius:50%;background:var(--kirmizi);border:1.5px solid #fff}
 
 .modal-arka{position:fixed;inset:0;background:rgba(40,26,10,.55);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+#modalKur{z-index:350}
 .modal-arka.acik{display:flex}
 .modal{background:var(--krem);width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:20px;padding:18px 16px calc(20px + env(safe-area-inset-bottom));animation:yukari .22s ease}
 @keyframes yukari{from{transform:translateY(20px) scale(.97);opacity:.4}to{transform:none;opacity:1}}
@@ -1906,6 +1907,7 @@ g('ayarLogo').src=LOGO_TAM;
 cizUrunFiltre();
 window.addEventListener('online',()=>{if(cevrimdisi)location.reload()});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+kurUyarisiKontrol();
 oturumKontrol();
 </script>
 </body>
