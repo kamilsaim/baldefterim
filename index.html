@@ -699,9 +699,17 @@ function kurUyarisiKontrol(){
   const iOS=/iPad|iPhone|iPod/.test(ua);
   const android=/Android/.test(ua);
   if(!iOS&&!android)return;
-  const mesaj=iOS
-    ? 'Uygulamayı ana ekranına ekleyerek daha hızlı açabilirsin: Safari altındaki <b>Paylaş</b> (□↑) simgesine dokun, sonra <b>Ana Ekrana Ekle</b>\'yi seç.'
-    : 'Uygulamayı ana ekranına ekleyerek daha hızlı açabilirsin: sağ üstteki <b>⋮</b> menüsüne dokun, sonra <b>Ana ekrana ekle</b>\'yi seç.';
+  const inApp=/FBAN|FBAV|FB_IAB|FBIOS|Instagram|Line\/|Twitter/i.test(ua);
+  let mesaj;
+  if(inApp){
+    mesaj=iOS
+      ? 'Bu sayfa Facebook/Instagram/X gibi bir uygulamanın kendi tarayıcısında açıldığı için ana ekrana ekleme burada çalışmıyor. Sağ alttaki (veya üstteki) <b>•••</b> simgesine dokun, <b>Safari\'de Aç</b>\'ı seç, ardından Safari\'de <b>Paylaş</b> (□↑) simgesinden <b>Ana Ekrana Ekle</b>\'yi kullan.'
+      : 'Bu sayfa Facebook/Instagram/X gibi bir uygulamanın kendi tarayıcısında açıldığı için ana ekrana ekleme burada çalışmıyor. Sağ üstteki <b>⋮</b> veya <b>•••</b> simgesine dokun, <b>Tarayıcıda Aç</b> / <b>Chrome\'da Aç</b>\'ı seç, ardından Chrome\'da sağ üstteki <b>⋮</b> menüsünden <b>Ana ekrana ekle</b>\'yi kullan.';
+  }else{
+    mesaj=iOS
+      ? 'Uygulamayı ana ekranına ekleyerek daha hızlı açabilirsin: Safari altındaki <b>Paylaş</b> (□↑) simgesine dokun, sonra <b>Ana Ekrana Ekle</b>\'yi seç.'
+      : 'Uygulamayı ana ekranına ekleyerek daha hızlı açabilirsin: sağ üstteki <b>⋮</b> menüsüne dokun, sonra <b>Ana ekrana ekle</b>\'yi seç.';
+  }
   g('kurMesaj').innerHTML=mesaj;
   g('modalKur').classList.add('acik');
   localStorage.setItem('bd_kur_gosterildi','1');
