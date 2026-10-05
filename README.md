@@ -8,7 +8,7 @@
 
 _Bal hasadı, ön sipariş, satış, stok, hediye ve zekat takibini tek yerde toplayan basit bir defter uygulaması._
 
-![Sürüm](https://img.shields.io/badge/sürüm-2.6.1-E8A013?style=flat-square)
+![Sürüm](https://img.shields.io/badge/sürüm-2.6.2-E8A013?style=flat-square)
 ![PWA](https://img.shields.io/badge/PWA-ana%20ekrana%20eklenebilir-8B5E34?style=flat-square)
 ![Vanilla JS](https://img.shields.io/badge/vanilla-JS-F5C24B?style=flat-square)
 ![Supabase](https://img.shields.io/badge/backend-Supabase-3ECF8E?style=flat-square)
@@ -59,6 +59,7 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 
 | Sürüm | Öne çıkanlar |
 |-------|--------------|
+| **2.6.2** | Hediyeler ve verilen zekatlar sipariş kartı görünümünde (ürün bazlı özet çipleri, Verilecek/Verildi grupları, doğrudan "Hediye Ekle"); Sezon Raporu yenilendi: özet kutuları + tahsilat çubuğu, bekleyen hediyeler, hasat ve devir ayrı ayrı kalanlarıyla "Stok Durumu" bölümü (metin kopyası ve Excel'de de) |
 | **2.6.1** | Stok ekranında bu sezon hasadı ve eski sezondan devir ayrı ayrı (her biri kendi kalanıyla); yeni sezona yalnızca satılabilir stok devrediyor (ön siparişe ayrılan bal iki kez sayılmıyor); gece 00:00–03:00 arası girilen kayıtların bir önceki güne kayması düzeltildi; ayar kaydı başarısız olunca artık "kaydedildi" denmiyor; müşteri adı/notlarındaki özel karakterler ( ' < & ) ekranı bozmuyor; çıkışta çevrimdışı önbellek temizleniyor |
 | **2.6.0** | Petek/karakovan gibi çıta bazlı satılan ürünlerde çıta (bar) adedi takibi: kg'a göre otomatik önerilir, elle düzeltilebilir; hasat, sipariş, stok, rapor ve Excel çıktısında görünür; sipariş formunda tutar/alınan-tutar ve eski sezon/hediye seçenekleri yan yana |
 | **2.5.2** | iOS ana ekrana eklenen PWA'da alt menü ve üst bar konumlandırma düzeltmesi (viewport-fit=cover kaldırıldı); dikey elastic scroll (bounce) engellendi |
