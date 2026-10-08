@@ -199,6 +199,7 @@ main{max-width:720px;margin:0 auto;padding:14px 14px 20px}
 .btn-google{background:#fff;border:1.5px solid var(--cizgi);color:var(--metin);display:flex;align-items:center;justify-content:center;gap:10px}
 .btn-apple{background:#000;border:1.5px solid #000;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
 html.apple-kapali .btn-apple{display:none}
+#onayMesaj:empty{display:none}
 
 .fab{position:fixed;right:18px;bottom:86px;width:56px;height:56px;background:var(--bal);color:#fff;font-size:26px;border-radius:50%;box-shadow:0 4px 14px rgba(232,160,19,.5);z-index:40;display:flex;align-items:center;justify-content:center}
 .fab:active{transform:scale(.93)}
@@ -547,10 +548,11 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
 
 <div class="modal-arka" id="modalOnay">
   <div class="modal" style="max-width:320px">
-    <div class="modal-baslik"><h2>Emin misin?</h2><button class="modal-kapat" onclick="onayYanit(false)">✕</button></div>
-    <p id="onayMesaj" style="margin:4px 2px 18px"></p>
+    <div class="modal-baslik"><h2 id="onayBaslik">Emin misin?</h2><button class="modal-kapat" onclick="onayYanit(false)">✕</button></div>
+    <p id="onayMesaj" style="margin:4px 2px 18px;white-space:pre-line"></p>
+    <input type="text" id="onayGirdi" style="display:none;margin:0 0 18px" onkeydown="if(event.key==='Enter')onayYanit(true)">
     <div class="satir-2">
-      <button class="btn btn-cerceve" onclick="onayYanit(false)">Vazgeç</button>
+      <button class="btn btn-cerceve" id="onayVazgecBtn" onclick="onayYanit(false)">Vazgeç</button>
       <button class="btn btn-bal" id="onayEvetBtn" onclick="onayYanit(true)">Evet</button>
     </div>
   </div>
@@ -657,7 +659,7 @@ if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativ
   });
 }
 async function cikisYap(){
-  if(!confirm('Oturum kapatılsın mı?'))return;
+  if(!await onaySor('Oturum kapatılsın mı?','Çıkış Yap',false))return;
   await sb.auth.signOut();
   /* Aynı cihazda sonraki kullanıcı önceki kişinin verisini çevrimdışı önbellekte görmesin */
   localStorage.removeItem('bd_cache');
@@ -674,12 +676,12 @@ async function hesabiSil(){
     localStorage.removeItem('bd_cache');
     localStorage.removeItem('bd_kur_gosterildi');
     await sb.auth.signOut();
-    alert(data&&data.account_deleted===false
+    await bilgiVer(data&&data.account_deleted===false
       ? 'Bal Defterim verilerin silindi. Hesabın başka uygulamalarda da kullanıldığı için hesabın tümüyle silinmedi.'
       : 'Hesabın ve tüm kayıtların silindi. Hoşça kal! 🍯');
     location.reload();
   }catch(e){
-    alert('Hesap silinemedi: '+(e.message||e)+'\nLütfen tekrar dene veya saimkamil@gmail.com adresine yaz.');
+    bilgiVer('Hesap silinemedi: '+(e.message||e)+'\nLütfen tekrar dene veya saimkamil@gmail.com adresine yaz.','Hata');
   }
 }
 sb.auth.onAuthStateChange((olay,oturum)=>{
@@ -1251,7 +1253,27 @@ async function silZekat(id){
 function ac(id){g(id).classList.add('acik')}
 function kapat(id){g(id).classList.remove('acik')}
 let _onayCozucu=null;
+/* Tarayıcının alert/confirm/prompt kutuları iOS uygulamasında (WKWebView) sayfa adresi başlığıyla
+   çirkin görünür — hepsi bu tek modal üzerinden: onaySor (evet/hayır), bilgiVer (tamam), metinSor (girdi) */
+function bilgiVer(mesaj,baslik){
+  const p=onaySor(mesaj,'Tamam',false);
+  g('onayBaslik').textContent=baslik||'Bilgi';
+  g('onayVazgecBtn').style.display='none';
+  g('onayEvetBtn').style.gridColumn='1/-1';
+  return p;
+}
+async function metinSor(baslik,varsayilan){
+  const p=onaySor('','Kaydet',false);
+  g('onayBaslik').textContent=baslik;
+  const gir=g('onayGirdi');gir.style.display='';gir.value=varsayilan||'';
+  setTimeout(()=>{gir.focus();gir.select()},50);
+  return (await p)?gir.value:null;
+}
 function onaySor(mesaj,evetYazi,tehlikeli){
+  g('onayBaslik').textContent='Emin misin?';
+  g('onayVazgecBtn').style.display='';
+  g('onayEvetBtn').style.gridColumn='';
+  g('onayGirdi').style.display='none';
   g('onayMesaj').textContent=mesaj;
   const btn=g('onayEvetBtn');
   btn.textContent=evetYazi||'Evet';
@@ -1559,7 +1581,7 @@ async function sezonSec(id){
 async function sezonDuzenle(id){
   if(cevrimdisi)return toast('📡 Çevrimdışı: işlem yapılamaz');
   const s=V.sezonlar.find(x=>x.id===id);if(!s)return;
-  const yeniAd=prompt('Sezon adı:',s.ad);
+  const yeniAd=await metinSor('Sezon adı',s.ad);
   if(yeniAd===null)return;
   const ad=yeniAd.trim();
   if(!ad)return toast('⚠️ Sezon adı boş olamaz');
@@ -1808,7 +1830,7 @@ async function yedekYukle(dosya){
     await veriYukle();ciz();
     toast('✅ Yedek başarıyla yüklendi');
   }catch(e){
-    alert('Yedek yüklenemedi: '+(e.message||e));
+    bilgiVer('Yedek yüklenemedi: '+(e.message||e),'Hata');
   }
 }
 
