@@ -1624,7 +1624,8 @@ async function yeniSezonAc(){
 function cizAyarlar(){
   /* Apple web akışında ad vermez → '—' */
   g('ayarAd').textContent=KUL?.user_metadata?.full_name||KUL?.user_metadata?.name||'—';
-  g('ayarEposta').textContent=KUL?.email||'—';
+  /* Apple'da "E-postamı gizle" seçilince adres …@privaterelay.appleid.com olur — kullanıcıya anlamsız görünür */
+  g('ayarEposta').textContent=/@privaterelay\.appleid\.com$/i.test(KUL?.email||'')?'Gizli (Apple ile giriş)':(KUL?.email||'—');
   cizUrunAyar();
   g('fiyatAyar').innerHTML=aktifUrunler().map(u=>`
     <label>${esc(u.ikon)} ${esc(u.ad)} (₺/${u.birim})</label>
