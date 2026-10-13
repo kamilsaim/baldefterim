@@ -24,8 +24,9 @@
 /* iOS: soldan/sağdan kenar kaydırma ile tarayıcı geri/ileri jestini kapat (beyaz ekran sorunu) */
 html{overscroll-behavior:none}
 body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;background:var(--krem);color:var(--metin);padding-top:env(safe-area-inset-top);padding-bottom:calc(76px + env(safe-area-inset-bottom));min-height:100vh;overscroll-behavior:none}
-/* iOS (viewport-fit=cover): Dinamik Ada/durum çubuğu şeridi. Android ve tarayıcıda inset 0 → görünmez */
-body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:var(--kavanoz);z-index:70}
+/* iOS (viewport-fit=cover): Dinamik Ada/durum çubuğu şeridi. Android ve tarayıcıda inset 0 → görünmez.
+   Başlıkla aynı yatay geçiş: ikisi tek parça görünsün */
+body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:linear-gradient(90deg,var(--kavanoz) 0%,var(--kavanoz-2) 100%);z-index:70}
 button{font-family:inherit;cursor:pointer;border:none;background:none}
 input,select,textarea{font-family:inherit;font-size:16px;width:100%;padding:11px 12px;border:1.5px solid var(--cizgi);border-radius:10px;background:#fff;color:var(--metin)}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--bal)}
@@ -35,7 +36,7 @@ label{display:block;font-size:13px;font-weight:700;color:var(--kavanoz-2);margin
 a{color:var(--bal-koyu)}
 
 /* Üst bar */
-header{background:linear-gradient(135deg,var(--kavanoz) 0%,var(--kavanoz-2) 100%);color:#F7E8C9;padding:14px 16px 12px;position:sticky;top:env(safe-area-inset-top);z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+header{background:linear-gradient(90deg,var(--kavanoz) 0%,var(--kavanoz-2) 100%);color:#F7E8C9;padding:14px 16px 12px;position:sticky;top:env(safe-area-inset-top);z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .header-ic{display:flex;align-items:center;gap:10px;max-width:720px;margin:0 auto}
 .header-baslik{flex:1;min-width:0}
 .logo-hex{width:40px;height:40px;background:#fff;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden}
@@ -579,7 +580,7 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
 
 <script>
 /* ═══════════════ SABİTLER ═══════════════ */
-const SURUM='2.6.5';
+const SURUM='2.6.6';
 /* Apple ile Giriş (App Store kuralı 4.8). Supabase'deki Apple secret'ı 6 ayda bir yenilenmeli
    (bitiş 6 Nisan 2027 — C:\apk\apple-anahtar\beebook\OKU-BENI.md). Süresi dolarsa / acil durumda false yap. */
 const APPLE_GIRIS_ACIK=true;

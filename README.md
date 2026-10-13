@@ -8,7 +8,7 @@
 
 _Bal hasadı, ön sipariş, satış, stok, hediye ve zekat takibini tek yerde toplayan basit bir defter uygulaması._
 
-![Sürüm](https://img.shields.io/badge/sürüm-2.6.5-E8A013?style=flat-square)
+![Sürüm](https://img.shields.io/badge/sürüm-2.6.6-E8A013?style=flat-square)
 ![PWA](https://img.shields.io/badge/PWA-ana%20ekrana%20eklenebilir-8B5E34?style=flat-square)
 ![Vanilla JS](https://img.shields.io/badge/vanilla-JS-F5C24B?style=flat-square)
 ![Supabase](https://img.shields.io/badge/backend-Supabase-3ECF8E?style=flat-square)
@@ -59,6 +59,7 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 
 | Sürüm | Öne çıkanlar |
 |-------|--------------|
+| **2.6.6** | iPhone'da durum çubuğu şeridi ile üst başlık tek parça görünüyor (aynı renk geçişi) |
 | **2.6.5** | Sipariş ekleme ekranı sıkılaştırıldı: Eski sezon / Hediye anahtarları yukarı alındı, Miktar ve Not ile aradaki boşluklar daraltıldı, ödeme ipucu kısaltıldı — form ekrana daha çok sığıyor |
 | **2.6.4** | iPhone'da üst başlık artık Dinamik Ada / durum çubuğunun arkasında kalmıyor (`viewport-fit=cover` + güvenli alan boşlukları); alt menü, + düğmesi, bildirim ve açılır pencereler ev çubuğuyla çakışmıyor. Android ve tarayıcıda görünüm aynı |
 | **2.6.3** | Apple ile Giriş (App Store hazırlığı; beebook Supabase projesindeki uygulamalarla ortak "KSapp" Apple girişi, `APPLE_GIRIS_ACIK` acil kapatma anahtarı); iOS kabuğunda Excel raporu ve JSON yedek paylaşım menüsüyle kaydediliyor; gizlilik politikasına Apple eklendi |
