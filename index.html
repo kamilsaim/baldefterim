@@ -216,11 +216,21 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
 
 .modal-arka{position:fixed;inset:0;background:rgba(40,26,10,.55);z-index:100;display:none;align-items:center;justify-content:center;padding:calc(20px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom))}
 #modalKur{z-index:350}
-/* Sipariş formu sıkı düzen: ekrana daha çok sığsın */
+/* Sipariş formu sıkı düzen: iPhone 14 Pro boyunda kaydırmadan Kaydet'e kadar sığsın */
+#modalSiparis{padding-top:calc(10px + env(safe-area-inset-top));padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+#modalSiparis .modal{padding:12px 16px 14px;max-height:min(94vh,calc(100vh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom)))}
+#modalSiparis .modal-baslik{margin-bottom:0}
+#modalSiparis label{margin:8px 0 4px}
+#modalSiparis label.anahtar{margin:0}
+#modalSiparis input:not([type=checkbox]),#modalSiparis textarea{padding:9px 12px}
+#modalSiparis textarea{display:block}
+#modalSiparis .urun-secim{margin-bottom:0}
+#modalSiparis .urun-btn{padding:8px 12px}
 #modalSiparis .anahtar-satir{padding:8px 2px 0}
+#modalSiparis .anahtar-satir b{white-space:nowrap;font-size:13.5px}
 #sipMiktarSatir label{margin-top:6px}
-#sipNotEtiket{margin-top:8px}
 #sipOdenenBilgi{font-size:11px}
+#sipKaydetBtn{margin-top:10px}
 .modal-arka.acik{display:flex}
 .modal{background:var(--krem);width:100%;max-width:560px;max-height:88vh;max-height:min(88vh,calc(100vh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));overflow-y:auto;border-radius:20px;padding:18px 16px 20px;animation:yukari .22s ease}
 @keyframes yukari{from{transform:translateY(20px) scale(.97);opacity:.4}to{transform:none;opacity:1}}
@@ -417,7 +427,7 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
     <div class="urun-secim" id="sipUrunBtn"></div>
     <div class="satir-2">
       <div class="anahtar-satir" id="sipKaynakSatir" style="display:none">
-        <b>🔄 Eski sezon (devir)</b>
+        <b>🔄 Eski sezon</b>
         <label class="anahtar"><input type="checkbox" id="sipDevirKaynak"><span class="kaydirici"></span></label>
       </div>
       <div class="anahtar-satir">
@@ -439,7 +449,7 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
     </div>
     <div id="sipToplamOto" style="font-size:12px;color:var(--soluk);margin-top:3px"></div>
     <div id="sipOdenenBilgi" style="font-size:12px;color:var(--soluk);margin-top:3px"></div>
-    <label id="sipNotEtiket">Not</label><textarea id="sipNot" rows="2" placeholder="İsteğe bağlı not..."></textarea>
+    <label>Not</label><textarea id="sipNot" rows="2" placeholder="İsteğe bağlı not..."></textarea>
     <button class="btn btn-bal" id="sipKaydetBtn" onclick="kaydetSiparis()">💾 Kaydet</button>
   </div>
 </div>
@@ -580,7 +590,7 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
 
 <script>
 /* ═══════════════ SABİTLER ═══════════════ */
-const SURUM='2.6.6';
+const SURUM='2.6.7';
 /* Apple ile Giriş (App Store kuralı 4.8). Supabase'deki Apple secret'ı 6 ayda bir yenilenmeli
    (bitiş 6 Nisan 2027 — C:\apk\apple-anahtar\beebook\OKU-BENI.md). Süresi dolarsa / acil durumda false yap. */
 const APPLE_GIRIS_ACIK=true;
