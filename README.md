@@ -8,7 +8,7 @@
 
 _Bal hasadı, ön sipariş, satış, stok, hediye ve zekat takibini tek yerde toplayan basit bir defter uygulaması._
 
-![Sürüm](https://img.shields.io/badge/sürüm-2.6.7-E8A013?style=flat-square)
+![Sürüm](https://img.shields.io/badge/sürüm-2.6.8-E8A013?style=flat-square)
 ![PWA](https://img.shields.io/badge/PWA-ana%20ekrana%20eklenebilir-8B5E34?style=flat-square)
 ![Vanilla JS](https://img.shields.io/badge/vanilla-JS-F5C24B?style=flat-square)
 ![Supabase](https://img.shields.io/badge/backend-Supabase-3ECF8E?style=flat-square)
@@ -59,6 +59,7 @@ Tek dosyalık HTML + vanilla JavaScript uygulaması; backend olarak [Supabase](h
 
 | Sürüm | Öne çıkanlar |
 |-------|--------------|
+| **2.6.8** | Giriş ekranındaki eski "Demo verileri buluta taşınmaz" yazısı kaldırıldı (demo modu yok); yerine "Kayıtların yalnızca sana görünür" |
 | **2.6.7** | Sipariş ekleme penceresi daha da sıkılaştırıldı: iPhone 14 Pro boyunda kaydırmadan Kaydet düğmesine kadar sığıyor (daha ince alanlar ve boşluklar, "Eski sezon" anahtarı tek satır) |
 | **2.6.6** | iPhone'da durum çubuğu şeridi ile üst başlık tek parça görünüyor (aynı renk geçişi) |
 | **2.6.5** | Sipariş ekleme ekranı sıkılaştırıldı: Eski sezon / Hediye anahtarları yukarı alındı, Miktar ve Not ile aradaki boşluklar daraltıldı, ödeme ipucu kısaltıldı — form ekrana daha çok sığıyor |
