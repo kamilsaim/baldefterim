@@ -69,6 +69,11 @@ main{max-width:720px;margin:0 auto;padding:14px 14px 20px}
 
 .stok-satir{display:flex;align-items:center;gap:10px;padding:11px 2px;border-bottom:1px dashed var(--cizgi)}
 .stok-satir:last-child{border-bottom:none}
+.ur-img{width:1.2em;height:1.2em;object-fit:cover;border-radius:5px;vertical-align:-.25em}
+.urun-hex .ur-img{width:100%;height:100%;border-radius:0;vertical-align:0}
+.hazir-urunler{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.hazir-btn{display:flex;align-items:center;gap:7px;padding:6px 12px 6px 7px;border:1.5px dashed var(--cizgi);border-radius:999px;background:var(--kart,#fff);font:inherit;font-size:13px;font-weight:600;color:inherit}
+.hazir-btn .ur-img{width:26px;height:26px;border-radius:50%;vertical-align:0}
 .urun-hex{width:40px;height:40px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
 .stok-bilgi{flex:1;min-width:0}
 .stok-bilgi b{font-size:14px}
@@ -382,6 +387,7 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
     </div>
     <div class="kart"><h3>🐝 Ürünler (Stok Türleri)</h3>
       <div id="urunAyar"></div>
+      <div id="urunHazir"></div>
       <button class="btn btn-cerceve" style="margin-top:10px" onclick="acUrunModal()">➕ Yeni Ürün Ekle</button>
       <div style="font-size:12px;color:var(--soluk);margin-top:8px;line-height:1.4">Kaydı olan bir ürün silinemez, <b>pasife alınır</b>: yeni sipariş/hasat formlarında çıkmaz ama eski kayıtların ve raporların bozulmaz.</div>
     </div>
@@ -590,7 +596,7 @@ nav button.uyari-nokta::after{content:"";position:absolute;top:7px;right:calc(50
 
 <script>
 /* ═══════════════ SABİTLER ═══════════════ */
-const SURUM='2.6.9';
+const SURUM='2.7.0';
 /* Apple ile Giriş (App Store kuralı 4.8). Supabase'deki Apple secret'ı 6 ayda bir yenilenmeli
    (bitiş 6 Nisan 2027 — C:\apk\apple-anahtar\beebook\OKU-BENI.md). Süresi dolarsa / acil durumda false yap. */
 const APPLE_GIRIS_ACIK=true;
@@ -608,6 +614,13 @@ const URUNLER_VARSAYILAN=[
   {id:'karakovan',ad:'Karakovan',ikon:'🪵',renk:'#8B5E34',birim:'kg',zekat:true,cita:true},
   {id:'polen',ad:'Polen',ikon:'🌼',renk:'#D9A63F',birim:'kg',zekat:true,cita:false}
 ];
+const GORSEL={anaari:'data:image/webp;base64,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',kovan:'data:image/webp;base64,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'};
+/* Hazır (isteğe bağlı) ürünler: kullanıcı Ayarlar'dan tek dokunuşla ekler; varsayılan listede YOK (herkes satmıyor) */
+const HAZIR_URUNLER=[
+  {gorsel:'anaari',ad:'Ana Arı',ikon:'👑',renk:'#E8A013',birim:'adet',zekat:false,cita:false},
+  {gorsel:'kovan',ad:'Kovan',ikon:'📦',renk:'#8B5E34',birim:'adet',zekat:false,cita:false}
+];
+const ik=u=>u.gorsel&&GORSEL[u.gorsel]?`<img class="ur-img" src="${GORSEL[u.gorsel]}" alt="">`:esc(u.ikon);
 const URUN_RENKLER=['#F5C24B','#E8A013','#8B5E34','#D9A63F','#4E8C50','#4A7BA6','#C2503C','#8E6BAF'];
 let URUNLER=URUNLER_VARSAYILAN.map(u=>({...u}));
 const sb=supabase.createClient(SB_URL,SB_KEY);
@@ -916,7 +929,7 @@ function cizUrunFiltre(){
   /* Seçili filtre silinmiş ya da pasife alınmışsa (çipi kalmaz) "Tüm Ürünler"e dön */
   if(aktifUrunF!=='hepsi'&&!aktifUrunler().some(u=>u.id===aktifUrunF))aktifUrunF='hepsi';
   g('urunFiltre').innerHTML=`<button class="f-chip ${aktifUrunF==='hepsi'?'aktif':''}" data-f="hepsi" onclick="setFiltre(this)">Tüm Ürünler</button>`
-    +aktifUrunler().map(u=>`<button class="f-chip ${aktifUrunF===u.id?'aktif':''}" data-f="${u.id}" onclick="setFiltre(this)">${esc(u.ikon)} ${esc(u.ad)}</button>`).join('');
+    +aktifUrunler().map(u=>`<button class="f-chip ${aktifUrunF===u.id?'aktif':''}" data-f="${u.id}" onclick="setFiltre(this)">${ik(u)} ${esc(u.ad)}</button>`).join('');
 }
 function cizOzet(){
   const {sip,st}=sezonVeri();
@@ -940,14 +953,14 @@ function cizOzet(){
     const tutar=siparisleri.reduce((a,o)=>a+efTutar(o),0);
     if(!adet)return '';
     return `<div class="stok-satir">
-      <div class="urun-hex" style="background:${u.renk}22;color:${u.renk}">${esc(u.ikon)}</div>
+      <div class="urun-hex" style="background:${u.renk}22;color:${u.renk}">${ik(u)}</div>
       <div class="stok-bilgi"><b>${esc(u.ad)}</b><small>${sayi(adet)} ${u.birim} satıldı · ${siparisleri.length} sipariş</small></div>
       <div class="stok-adet"><b>${para(tutar)}</b></div>
     </div>`}).join('')||'<div class="bos"><div class="bos-ikon">💰</div><p>Henüz satış yok.</p></div>';
   g('ozetStok').innerHTML=gorunurUrunler(st).map(u=>{
     const d=st[u.id];
     return `<div class="stok-satir">
-      <div class="urun-hex" style="background:${u.renk}22;color:${u.renk}">${esc(u.ikon)}</div>
+      <div class="urun-hex" style="background:${u.renk}22;color:${u.renk}">${ik(u)}</div>
       <div class="stok-bilgi"><b>${esc(u.ad)}</b><small>Rezerve: ${sayi(d.rezerve)} ${u.birim}</small></div>
       <div class="stok-adet"><b>${sayi(d.mevcut)} ${u.birim}</b><small>satılabilir</small></div>
     </div>`}).join('');
@@ -955,7 +968,7 @@ function cizOzet(){
   g('ozetSon').innerHTML=son.length?son.map(o=>{
     const u=urun(o.urun);
     return `<div class="stok-satir">
-      <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">${esc(u.ikon)}</div>
+      <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">${ik(u)}</div>
       <div class="stok-bilgi"><b>${esc(o.musteri)}</b><small>${sayi(o.miktar)} ${u.birim} ${esc(u.ad)}${o.hediye?' · 🎁':''}</small></div>
       <div class="stok-adet"><small>${o.teslim?'✅ Teslim':'📋 Bekliyor'}</small></div>
     </div>`}).join(''):'<div class="bos"><div class="bos-ikon">🐝</div><p>Henüz sipariş yok.<br>Sağ alttaki ＋ ile ilk siparişi ekle!</p></div>';
@@ -1001,7 +1014,7 @@ function cizOzetKiyas(){
   const satirlar=[
     {ad:'Satış cirosu',ikon:'💰',renk:'#4E8C50',s:satis(b),o:satis(o),bicim:para},
     {ad:'Sipariş sayısı',ikon:'📋',renk:'#E8A013',s:b.sip.length,o:o.sip.length,bicim:v=>v+' adet'},
-    ...URUNLER.map(u=>({ad:u.ad+' hasadı',ikon:u.ikon,renk:u.renk,s:b.st[u.id].hasat,o:o.st[u.id].hasat,bicim:v=>sayi(v)+' '+u.birim}))
+    ...URUNLER.map(u=>({ad:u.ad+' hasadı',ikon:ik(u),renk:u.renk,s:b.st[u.id].hasat,o:o.st[u.id].hasat,bicim:v=>sayi(v)+' '+u.birim}))
   ].filter(r=>r.s||r.o);
   g('ozetKiyas').innerHTML=satirlar.length?satirlar.map(r=>{
     const fark=r.s-r.o;
@@ -1010,7 +1023,7 @@ function cizOzetKiyas(){
     const isaret=fark>0?'▲':fark<0?'▼':'—';
     const etiket=yuzde===null?(fark>0?'yeni':'—'):(yuzde>0?'+':'')+yuzde+'%';
     return `<div class="stok-satir">
-      <div class="urun-hex" style="background:${r.renk}22;color:${r.renk};width:34px;height:34px;font-size:15px">${esc(r.ikon)}</div>
+      <div class="urun-hex" style="background:${r.renk}22;color:${r.renk};width:34px;height:34px;font-size:15px">${r.ikon}</div>
       <div class="stok-bilgi"><b>${esc(r.ad)}</b><small>${esc(onceki.ad)}: ${r.bicim(r.o)}</small></div>
       <div class="stok-adet"><b>${r.bicim(r.s)}</b><small style="color:${renk};font-weight:700">${isaret} ${etiket}</small></div>
     </div>`}).join(''):'<div class="bos" style="padding:16px"><p>Karşılaştıracak veri yok.</p></div>';
@@ -1040,7 +1053,7 @@ function cizSiparisler(){
     return `<div class="sip-kart ${o.teslim?'teslim':''}">
       <div class="sip-icerik">
         <div class="sip-ust"><b style="cursor:pointer;text-decoration:underline dotted var(--soluk)" onclick="musteriGecmis(decodeURIComponent('${jsArg(o.musteri)}'))">${esc(o.musteri)}</b><span class="sip-tarih">${trhF(o.tarih)}</span></div>
-        <div class="sip-detay">${esc(u.ikon)} ${sayi(o.miktar)} ${u.birim} ${esc(u.ad)} · <b>${para(tutar)}</b> (${para(o.fiyat)}/${u.birim})${o.kaynak==='devir'?' · <span style="color:var(--soluk)">🔄 devir</span>':''}</div>
+        <div class="sip-detay">${ik(u)} ${sayi(o.miktar)} ${u.birim} ${esc(u.ad)} · <b>${para(tutar)}</b> (${para(o.fiyat)}/${u.birim})${o.kaynak==='devir'?' · <span style="color:var(--soluk)">🔄 devir</span>':''}</div>
         ${o.tel?`<div class="sip-iletisim"><a href="tel:${esc(o.tel)}">📞 Ara</a><a href="https://wa.me/${tel}" target="_blank">💬 WhatsApp</a></div>`:''}
         ${o.aciklama?`<div class="sip-not">📝 ${esc(o.aciklama)}</div>`:''}
         <div class="rozetler">
@@ -1086,7 +1099,7 @@ function cizStok(){
       +(devirVar?grup('🔄 Eski sezondan devir',d.devir,'Devir',d.satisDevir,d.hediyeDevir,0,d.devirKalan,d.rezerveDevir):'');
     return `<div class="stok-blok ${u.pasif?'pasif':''}">
       <div class="stok-satir" style="border:none;padding:0 0 6px">
-        <div class="urun-hex" style="background:${u.renk}22;color:${u.renk}">${esc(u.ikon)}</div>
+        <div class="urun-hex" style="background:${u.renk}22;color:${u.renk}">${ik(u)}</div>
         <div class="stok-bilgi"><b>${esc(u.ad)}${u.pasif?' <span class="pasif-rozet">pasif</span>':''}</b><small>${sayi(d.mevcut)} ${u.birim} satılabilir</small></div>
         <div class="stok-adet"><b>${sayi(d.stok)} ${u.birim}</b><small>depoda</small></div>
       </div>
@@ -1095,7 +1108,7 @@ function cizStok(){
   g('hasatListe').innerHTML=hasat.length?hasat.map(h=>{
     const u=urun(h.urun);
     return `<div class="stok-satir">
-      <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">${h.tip==='devir'?'🔄':u.ikon}</div>
+      <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">${h.tip==='devir'?'🔄':ik(u)}</div>
       <div class="stok-bilgi"><b>${esc(u.ad)} ${h.tip==='devir'?'(Devir)':''}</b><small>${trhF(h.tarih)}${h.aciklama?' · '+esc(h.aciklama):''}</small></div>
       <div class="stok-adet"><b>+${sayi(h.miktar)} ${u.birim}</b><small>${sayi(hasatKalan[h.id]||0)} ${u.birim} kalan</small>
         <small><button style="color:var(--bal-koyu);font-size:11px;font-weight:700;margin-right:8px" ${cevrimdisi?'disabled':''} onclick="duzenleHasat('${h.id}')">Düzenle</button><button style="color:var(--kirmizi);font-size:11px;font-weight:700" ${cevrimdisi?'disabled':''} onclick="silHasat('${h.id}')">Sil</button></small></div>
@@ -1108,7 +1121,7 @@ function cizZekat(){
     const oran=Math.min(100,d.zekatHesap?d.zekVer/d.zekatHesap*100:0);
     return `<div class="kart">
       <div class="stok-satir" style="border:none;padding:0">
-        <div class="urun-hex" style="background:${u.renk}22;color:${u.renk}">${esc(u.ikon)}</div>
+        <div class="urun-hex" style="background:${u.renk}22;color:${u.renk}">${ik(u)}</div>
         <div class="stok-bilgi"><b>${esc(u.ad)}</b><small>Hasat ${sayi(d.hasat)} ${u.birim} → Zekat ${sayi(d.zekatHesap)} ${u.birim}</small></div>
         <div class="stok-adet"><b style="color:${d.zekatBorc>0?'var(--kirmizi)':'var(--yesil)'}">${d.zekatBorc>0?sayi(d.zekatBorc)+' '+u.birim:'✅ Tamam'}</b><small>${d.zekatBorc>0?'kalan':'zekat verildi'}</small></div>
       </div>
@@ -1119,14 +1132,14 @@ function cizZekat(){
   const zekTop={};
   zek.forEach(z=>{zekTop[z.urun]=(zekTop[z.urun]||0)+ +z.miktar;});
   g('zekatUrunler').innerHTML=Object.entries(zekTop).map(([id,m])=>{const u=urun(id);
-    return `<span class="hd-cip" style="background:${u.renk}22;color:${u.renk==='#F5C24B'?'#9A6E0E':u.renk}">${esc(u.ikon)} ${sayi(m)} ${u.birim} ${esc(u.ad)}</span>`}).join('');
+    return `<span class="hd-cip" style="background:${u.renk}22;color:${u.renk==='#F5C24B'?'#9A6E0E':u.renk}">${ik(u)} ${sayi(m)} ${u.birim} ${esc(u.ad)}</span>`}).join('');
   g('zekatListe').innerHTML=zek.length?[...zek].sort((a,b)=>(b.tarih||'').localeCompare(a.tarih||'')).map(z=>{
     const u=urun(z.urun);
     return `<div class="sip-kart zekat">
       <div class="sip-icerik">
         <div class="sip-ust"><b>🤲 ${sayi(z.miktar)} ${u.birim} ${esc(u.ad)}</b><span class="sip-tarih">${trhF(z.tarih)}</span></div>
         ${z.aciklama?`<div class="sip-not">📝 ${esc(z.aciklama)}</div>`:''}
-        <div class="rozetler"><span class="rozet r-zekat">${esc(u.ikon)} Zekat verildi</span></div>
+        <div class="rozetler"><span class="rozet r-zekat">${ik(u)} Zekat verildi</span></div>
       </div>
       <div class="sip-butonlar">
         <div class="sip-btn-grup">
@@ -1146,13 +1159,13 @@ function cizZekat(){
   const urunTop={};
   hediyeler.forEach(o=>{urunTop[o.urun]=(urunTop[o.urun]||0)+ +o.miktar;});
   g('hediyeUrunler').innerHTML=Object.entries(urunTop).map(([id,m])=>{const u=urun(id);
-    return `<span class="hd-cip" style="background:${u.renk}22;color:${u.renk==='#F5C24B'?'#9A6E0E':u.renk}">${esc(u.ikon)} ${sayi(m)} ${u.birim} ${esc(u.ad)}</span>`}).join('');
+    return `<span class="hd-cip" style="background:${u.renk}22;color:${u.renk==='#F5C24B'?'#9A6E0E':u.renk}">${ik(u)} ${sayi(m)} ${u.birim} ${esc(u.ad)}</span>`}).join('');
   const kart=o=>{
     const u=urun(o.urun);
     return `<div class="sip-kart hediye ${o.teslim?'teslim':''}">
       <div class="sip-icerik">
         <div class="sip-ust"><b style="cursor:pointer;text-decoration:underline dotted var(--soluk)" onclick="musteriGecmis(decodeURIComponent('${jsArg(o.musteri)}'))">${esc(o.musteri)}</b><span class="sip-tarih">${trhF(o.tarih)}</span></div>
-        <div class="sip-detay">${esc(u.ikon)} ${sayi(o.miktar)} ${u.birim} ${esc(u.ad)}${o.kaynak==='devir'?' · <span style="color:var(--soluk)">🔄 devir</span>':''}</div>
+        <div class="sip-detay">${ik(u)} ${sayi(o.miktar)} ${u.birim} ${esc(u.ad)}${o.kaynak==='devir'?' · <span style="color:var(--soluk)">🔄 devir</span>':''}</div>
         ${o.aciklama?`<div class="sip-not">📝 ${esc(o.aciklama)}</div>`:''}
         <div class="rozetler">
           <span class="rozet r-hediye">🎁 Hediye</span>
@@ -1316,7 +1329,7 @@ function sipUrunButonlariCiz(){
   const secili=g('sipUrun').value;
   /* Düzenlenen eski sipariş pasif bir ürüne aitse o ürün de listeye girsin */
   const liste=aktifUrunler().some(u=>u.id===secili)||!secili?aktifUrunler():[...aktifUrunler(),urun(secili)];
-  g('sipUrunBtn').innerHTML=liste.map(u=>`<button type="button" class="urun-btn ${secili===u.id?'aktif':''}" onclick="sipUrunSec('${u.id}')"><span>${esc(u.ikon)}</span>${esc(u.ad)}</button>`).join('');
+  g('sipUrunBtn').innerHTML=liste.map(u=>`<button type="button" class="urun-btn ${secili===u.id?'aktif':''}" onclick="sipUrunSec('${u.id}')"><span>${ik(u)}</span>${esc(u.ad)}</button>`).join('');
 }
 function sipUrunSec(id){g('sipUrun').value=id;sipUrunButonlariCiz();sipKaynakGuncelle();_sipCitaElle=false;sipCitaGuncelle();citaOner();fiyatOner()}
 /* Seçilen ürünün devir (eski sezon) stoğu varsa kaynak anahtarını göster, yoksa gizle+sıfırla */
@@ -1668,7 +1681,7 @@ function cizAyarlar(){
   g('ayarEposta').textContent=/@privaterelay\.appleid\.com$/i.test(KUL?.email||'')?'Gizli (Apple ile giriş)':(KUL?.email||'—');
   cizUrunAyar();
   g('fiyatAyar').innerHTML=aktifUrunler().map(u=>`
-    <label>${esc(u.ikon)} ${esc(u.ad)} (₺/${u.birim})</label>
+    <label>${ik(u)} ${esc(u.ad)} (₺/${u.birim})</label>
     <input type="number" id="fy_${u.id}" value="${V.fiyatlar[u.id]||0}" min="0">`).join('');
 }
 async function kaydetFiyatlar(){
@@ -1694,10 +1707,11 @@ function urunIdUret(ad){
   return id;
 }
 function cizUrunAyar(){
+  cizHazirUrunler();
   g('urunAyar').innerHTML=URUNLER.map(u=>{
     const n=urunKayitSayisi(u.id);
     return `<div class="ur-satir ${u.pasif?'pasif':''}">
-      <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">${esc(u.ikon)}</div>
+      <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">${ik(u)}</div>
       <div class="ur-bilgi"><b>${esc(u.ad)}${u.pasif?' <span class="pasif-rozet">pasif</span>':''}</b>
         <small>${u.birim} · ${u.zekat===false?'zekata tabi değil':'zekata tabi'} · ${n} kayıt</small></div>
       <button class="mini-btn kucuk" title="Düzenle" ${cevrimdisi?'disabled':''} onclick="acUrunModal('${u.id}')">✏️</button>
@@ -1705,6 +1719,20 @@ function cizUrunAyar(){
         ?`<button class="mini-btn kucuk yesil" title="Aktif Et" ${cevrimdisi?'disabled':''} onclick="urunAktifEt('${u.id}')">👁️</button>`
         :`<button class="mini-btn kucuk tehlike" title="${n?'Pasife Al':'Sil'}" ${cevrimdisi?'disabled':''} onclick="urunSil('${u.id}')">🗑️</button>`}
     </div>`}).join('');
+}
+function cizHazirUrunler(){
+  const eksik=HAZIR_URUNLER.filter(h=>!URUNLER.some(u=>u.gorsel===h.gorsel));
+  g('urunHazir').innerHTML=eksik.length?`<div style="font-size:12px;color:var(--soluk);margin-top:12px">Satıyorsanız tek dokunuşla ekleyin:</div><div class="hazir-urunler">`
+    +eksik.map(h=>`<button type="button" class="hazir-btn" ${cevrimdisi?'disabled':''} onclick="hazirUrunEkle('${h.gorsel}')"><img class="ur-img" src="${GORSEL[h.gorsel]}" alt="">${esc(h.ad)} <span style="color:var(--soluk)">＋</span></button>`).join('')+`</div>`:'';
+}
+async function hazirUrunEkle(gorsel){
+  if(cevrimdisi)return toast('📡 Çevrimdışı: işlem yapılamaz');
+  const h=HAZIR_URUNLER.find(x=>x.gorsel===gorsel);if(!h||URUNLER.some(u=>u.gorsel===gorsel))return;
+  const eskiUrunler=URUNLER.map(u=>({...u})),eskiFiyatlar={...V.fiyatlar},eskiV=V.urunler;
+  const yeni={id:urunIdUret(h.ad),...h,pasif:false};
+  URUNLER.push(yeni);V.fiyatlar[yeni.id]=V.fiyatlar[yeni.id]||0;V.urunler=URUNLER;
+  if(!await ayarKaydet()){URUNLER=eskiUrunler;V.fiyatlar=eskiFiyatlar;V.urunler=eskiV;return;}
+  ciz();toast('✅ '+h.ad+' eklendi — fiyatını aşağıdan girin');
 }
 function urunRenkSec(r){
   g('urunRenk').value=r;
@@ -1744,6 +1772,7 @@ async function kaydetUrun(){
   if(id){
     const u=URUNLER.find(x=>x.id===id);
     if(!u)return toast('⚠️ Ürün bulunamadı');
+    if(u.gorsel&&yeni.ikon!==u.ikon)delete u.gorsel; /* kullanıcı emoji seçtiyse görsel iptal */
     Object.assign(u,yeni); /* id DEĞİŞMEZ — kayıtlar ona bağlı */
   }else{
     URUNLER.push({id:urunIdUret(ad),...yeni,pasif:false});
@@ -1836,6 +1865,27 @@ async function yedekYukle(dosya){
   const uid=KUL.id;
   const upd=(t,rows,conflict)=>rows.length?sb.from(t).upsert(rows.map(r=>({...r,user_id:uid})),{onConflict:conflict}):{error:null};
   try{
+    /* Yedek başka bir hesaptan (ör. web'de Google ile, iOS'ta Apple ile) alınmışsa kayıt ID'leri
+       o hesaba ait; aynı ID ile upsert RLS'e takılır. Bu durumda ID'leri bu hesaba özgü yeniden üret.
+       ID = hash(uid + eski id) → aynı yedek iki kez yüklenirse kopya oluşmaz. */
+    const tumu=[...y.sezonlar,...(y.hasatlar||[]),...y.siparisler,...(y.zekatlar||[])];
+    if(tumu.some(r=>r.user_id&&r.user_id!==uid)){
+      const harita={};
+      const yeniId=async eski=>{
+        if(!eski)return eski;
+        if(!harita[eski]){
+          const h=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(uid+':'+eski)));
+          h[6]=(h[6]&0x0f)|0x50;h[8]=(h[8]&0x3f)|0x80;
+          const x=[...h.slice(0,16)].map(b=>b.toString(16).padStart(2,'0')).join('');
+          harita[eski]=`${x.slice(0,8)}-${x.slice(8,12)}-${x.slice(12,16)}-${x.slice(16,20)}-${x.slice(20,32)}`;
+        }
+        return harita[eski];
+      };
+      const cevir=async rows=>Promise.all((rows||[]).map(async r=>{const n={...r,id:await yeniId(r.id)};if('sezon_id'in r)n.sezon_id=await yeniId(r.sezon_id);return n;}));
+      y.sezonlar=await cevir(y.sezonlar);y.hasatlar=await cevir(y.hasatlar);
+      y.siparisler=await cevir(y.siparisler);y.zekatlar=await cevir(y.zekatlar);
+      if(y.aktifSezon)y.aktifSezon=await yeniId(y.aktifSezon);
+    }
     let r;
     r=await upd('bd_sezonlar',y.sezonlar||[],'id');if(r.error)throw r.error;
     r=await upd('bd_hasatlar',y.hasatlar||[],'id');if(r.error)throw r.error;
@@ -1933,7 +1983,7 @@ function cizRapor(){
     const kaynak=(ikon,ad,giris,cikis,kalan,bir)=>`<div class="rap-kaynak"><span>${ikon} ${ad}</span>
       <span class="k-mik">${sayi(giris)} ${bir}${cikis>0.005?` · −${sayi(cikis)} çıkış`:''}</span><b>${sayi(kalan)} ${bir} kalan</b></div>`;
     h+=`<div class="rap-blok"><h4>Stok Durumu</h4>`+stokSatir.map(({u,d})=>`<div class="rap-stok">
-      <div class="rap-stok-ust"><span style="font-size:18px">${esc(u.ikon)}</span><b>${esc(u.ad)}</b>
+      <div class="rap-stok-ust"><span style="font-size:18px">${ik(u)}</span><b>${esc(u.ad)}</b>
         <div class="sag"><b>${sayi(d.mevcut)} ${u.birim}</b>satılabilir</div></div>
       ${kaynak('🚜','Bu sezon hasadı',d.hasat,d.hasat-d.hasatKalan,d.hasatKalan,u.birim)}
       ${d.devir>0?kaynak('🔄','Eski sezon devri',d.devir,d.devir-d.devirKalan,d.devirKalan,u.birim):''}
@@ -1945,7 +1995,7 @@ function cizRapor(){
   if(urunSatir.length){
     const citaVarMi=urunSatir.some(({u})=>u.cita);
     const hucre=({u,d})=>`<tr>
-      <td>${esc(u.ikon)} ${esc(u.ad)}</td>
+      <td>${ik(u)} ${esc(u.ad)}</td>
       <td>${sayi(d.satisMik)}</td><td>${para(d.satisTutar)}</td>
       <td>${d.satisMik?para(d.satisTutar/d.satisMik):'—'}</td>
       <td>${para(d.tahsil)}</td><td>${para(d.alacak)}</td>
@@ -2041,7 +2091,7 @@ function musteriGecmis(ad){
     const u=urun(o.urun);
     const sezonAd=V.sezonlar.find(s=>s.id===o.sezon_id)?.ad||'—';
     return `<div class="stok-satir" style="cursor:pointer" onclick="kapat('modalMusteri');duzenleSiparis('${o.id}')">
-      <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">${esc(u.ikon)}</div>
+      <div class="urun-hex" style="background:${u.renk}22;color:${u.renk};width:34px;height:34px;font-size:16px">${ik(u)}</div>
       <div class="stok-bilgi"><b>${sayi(o.miktar)} ${u.birim} ${esc(u.ad)}${o.hediye?' · 🎁':''}</b>
         <small>${esc(sezonAd)} · ${trhF(o.tarih)} · ${o.teslim?'✅ Teslim':'📋 Bekliyor'}${!o.hediye?(tamOdendi(o)?' · 💰 Ödendi':kismiMi(o)?' · 🟡 Kısmi '+para(odenenT(o)):' · ⏳ Ödeme bekliyor'):''}</small></div>
       <div class="stok-adet"><b>${o.hediye?'Hediye':para(efTutar(o))}</b></div>
